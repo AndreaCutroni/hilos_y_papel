@@ -72,6 +72,10 @@ keep the two in sync.
 and are waiting to be built from the data already sitting in
 `content/products.ts`.
 
+`assets/images/chiara.webp` and `assets/images/notebook-blue.webp` are not
+imported yet — they are staged for `/chi-sono` and `/quaderni` respectively, so
+leave them in place rather than pruning them as unused.
+
 ## Design tokens
 
 Defined in the `@theme` block of `src/index.css`. The palette is **derived from
