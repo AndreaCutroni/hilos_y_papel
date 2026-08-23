@@ -72,8 +72,7 @@ export function PageTurnReveal({ children, delay = 0.4, className = '' }: Props)
           <div
             className="absolute inset-0"
             style={{
-              background:
-                'linear-gradient(255deg, rgba(42,22,20,0.16) 0%, rgba(42,22,20,0) 38%)',
+              background: 'linear-gradient(255deg, rgba(42,22,20,0.16) 0%, rgba(42,22,20,0) 38%)',
             }}
           />
         </div>

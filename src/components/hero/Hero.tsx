@@ -49,7 +49,10 @@ export function Hero() {
               {hero.subhead}
             </motion.p>
 
-            <motion.div {...fadeUp(settle + 0.1)} className="mt-9 flex flex-wrap items-center gap-4">
+            <motion.div
+              {...fadeUp(settle + 0.1)}
+              className="mt-9 flex flex-wrap items-center gap-4"
+            >
               <Link
                 to={hero.primaryCta.to}
                 className="inline-flex items-center rounded-sm bg-accent px-6 py-3 text-label font-bold tracking-wide text-paper uppercase transition-colors duration-200 hover:bg-wine"
@@ -69,12 +72,15 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* Photograph, revealed by the cover swinging open */}
+          {/* Photograph, revealed by the cover swinging open. Width is capped near the
+              image's native 636px below lg so it never upscales into softness. */}
           <motion.div
             initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={reduced ? { duration: 0.01 } : { duration: 0.4, ease: EASE_OUT, delay: 0.2 }}
-            className="relative"
+            transition={
+              reduced ? { duration: 0.01 } : { duration: 0.4, ease: EASE_OUT, delay: 0.2 }
+            }
+            className="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:max-w-none"
           >
             <PageTurnReveal delay={0.55} className="overflow-hidden rounded-[3px]">
               <figure className="relative m-0">

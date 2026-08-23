@@ -23,7 +23,7 @@ export const generi = [
     priceFrom: 25,
     priceTo: 60,
     description:
-      "Copertina personalizzabile a piacimento. Puoi darmi una foto, un’idea o un tema e realizzerò il disegno illustrato da stampare sulla copertina. Puoi scegliere di inserire il nome.",
+      'Copertina personalizzabile a piacimento. Puoi darmi una foto, un’idea o un tema e realizzerò il disegno illustrato da stampare sulla copertina. Puoi scegliere di inserire il nome.',
   },
 ] as const
 
@@ -58,7 +58,7 @@ export const carte = [
   {
     id: 'riciclata' satisfies Carta,
     name: 'Carta riciclata',
-    note: "Consigliata per l’ambiente e per la resa con le carte fantasia.",
+    note: 'Consigliata per l’ambiente e per la resa con le carte fantasia.',
     recommended: true,
   },
   {
@@ -82,7 +82,7 @@ export const personalizzazione = {
     {
       from: 'Una foto',
       detail:
-        "Reinterpreterò l’immagine e realizzerò un’illustrazione che verrà stampata sul fronte della copertina.",
+        'Reinterpreterò l’immagine e realizzerò un’illustrazione che verrà stampata sul fronte della copertina.',
     },
     {
       from: 'Un tema',
@@ -125,7 +125,13 @@ export const esempi: Esempio[] = [
   { genere: 'personalizzato', tipologia: 'rigido', formato: 'A6 verticale', price: 35 },
   { genere: 'personalizzato', tipologia: 'rigido', formato: 'A6 orizzontale', price: 35 },
   { genere: 'personalizzato', tipologia: 'rigido', formato: 'A5 verticale', price: 40 },
-  { genere: 'fantasia', tipologia: 'flex', formato: 'A6 verticale', price: 38, label: 'Tris di quaderni' },
+  {
+    genere: 'fantasia',
+    tipologia: 'flex',
+    formato: 'A6 verticale',
+    price: 38,
+    label: 'Tris di quaderni',
+  },
 ]
 
 export const prezziNota =

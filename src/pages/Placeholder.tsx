@@ -25,7 +25,10 @@ export function Placeholder({ title, intro }: Props) {
           <motion.div variants={rise} className="mt-8 max-w-md">
             <ThreadDivider />
           </motion.div>
-          <motion.p variants={rise} className="mt-8 max-w-xl text-body-lg text-ink-soft text-pretty">
+          <motion.p
+            variants={rise}
+            className="mt-8 max-w-xl text-body-lg text-ink-soft text-pretty"
+          >
             {intro}
           </motion.p>
         </motion.div>

@@ -24,16 +24,16 @@ export const contact = {
 export const hero = {
   eyebrow: 'Rilegatura artigianale · Roma',
   /** Split into words so the headline can be revealed a word at a time. */
-  headline: ['Dietro', 'ogni', 'oggetto', "c’è", 'un', 'tempo', 'da', 'rispettare.'],
+  headline: ['Dietro', 'ogni', 'oggetto', 'c’è', 'un', 'tempo', 'da', 'rispettare.'],
   subhead:
-    "A 16 anni ho imparato a cucire la carta, per le strade colorate dell’Argentina, e non ho più smesso. Ogni quaderno nasce da una scelta accurata tra fili, colori, carta e creatività.",
+    'A 16 anni ho imparato a cucire la carta, per le strade colorate dell’Argentina, e non ho più smesso. Ogni quaderno nasce da una scelta accurata tra fili, colori, carta e creatività.',
   primaryCta: { label: 'Componi il tuo quaderno', to: '/componi-il-tuo' },
   secondaryCta: { label: 'Guarda i quaderni', to: '/quaderni' },
 } as const
 
 export const story = {
   origin:
-    "Hilos y Papel racchiude la storia di una passione nata per le strade colorate dell’Argentina, dove ho imparato l’arte della rilegatura a mano.",
+    'Hilos y Papel racchiude la storia di una passione nata per le strade colorate dell’Argentina, dove ho imparato l’arte della rilegatura a mano.',
   time: 'Un tempo di ideazione, di scelta e di realizzazione. Quando impariamo a rispettare questo tempo, comprendiamo il valore che si racchiude dietro ogni singolo oggetto.',
   invitation:
     'Se ti piacciono le cose semplici e autentiche o sei in cerca di un regalo originale, Hilos y Papel fa al caso tuo.',
@@ -53,7 +53,7 @@ export const pillars = [
   },
   {
     title: 'Fatto per te',
-    body: "Dammi una foto, un tema o anche solo un colore: reinterpreto l’immagine e realizzo l’illustrazione che finirà sulla copertina. Puoi scegliere di inserire il nome.",
+    body: 'Dammi una foto, un tema o anche solo un colore: reinterpreto l’immagine e realizzo l’illustrazione che finirà sulla copertina. Puoi scegliere di inserire il nome.',
   },
 ] as const
 
