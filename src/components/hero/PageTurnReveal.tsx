@@ -30,7 +30,7 @@ export function PageTurnReveal({ children, delay = 0.4, className = '' }: Props)
         className="pointer-events-none absolute inset-0 rounded-[3px]"
         style={{
           background:
-            'linear-gradient(100deg, rgba(42,22,20,0.5) 0%, rgba(42,22,20,0.22) 45%, rgba(42,22,20,0) 78%)',
+            'linear-gradient(100deg, rgba(46,26,24,0.5) 0%, rgba(46,26,24,0.22) 45%, rgba(46,26,24,0) 78%)',
         }}
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
@@ -48,7 +48,7 @@ export function PageTurnReveal({ children, delay = 0.4, className = '' }: Props)
       >
         {/* outer face */}
         <div
-          className="paper-grain absolute inset-0 overflow-hidden rounded-[3px] bg-paper-deep"
+          className="paper-grain absolute inset-0 overflow-hidden rounded-[3px] bg-paper-lift"
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div className="absolute inset-y-0 left-0 w-9 py-3">
@@ -59,7 +59,7 @@ export function PageTurnReveal({ children, delay = 0.4, className = '' }: Props)
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.5) 72%, rgba(42,22,20,0.12) 100%)',
+                'linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.5) 72%, rgba(46,26,24,0.12) 100%)',
             }}
           />
         </div>
@@ -72,7 +72,7 @@ export function PageTurnReveal({ children, delay = 0.4, className = '' }: Props)
           <div
             className="absolute inset-0"
             style={{
-              background: 'linear-gradient(255deg, rgba(42,22,20,0.16) 0%, rgba(42,22,20,0) 38%)',
+              background: 'linear-gradient(255deg, rgba(46,26,24,0.16) 0%, rgba(46,26,24,0) 38%)',
             }}
           />
         </div>

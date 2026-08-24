@@ -1,19 +1,19 @@
 import { brand, contact } from '@/content/brand'
-import { Wordmark } from '@/components/Wordmark'
+import { FounderName, Wordmark } from '@/components/Wordmark'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
 
 export function Footer() {
   return (
-    <footer className="paper-grain paper-grain-dark relative mt-24 bg-wine text-paper">
-      <ThreadDivider color="var(--color-accent-on-dark)" animate={false} className="opacity-70" />
+    <footer className="paper-grain paper-grain-dark relative mt-24 bg-brick text-on-brick">
+      <ThreadDivider color="var(--color-paper)" animate={false} className="opacity-70" />
       <div className="mx-auto max-w-6xl px-6 py-12 md:px-8 md:py-16">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-h3 leading-none">
               <Wordmark />
             </p>
-            <p className="mt-3 text-body text-paper/75">
-              {brand.tagline} · {brand.founder}
+            <p className="mt-3 text-body text-on-brick/80">
+              {brand.tagline} · <FounderName className="text-body-lg" />
             </p>
           </div>
 
@@ -34,7 +34,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <p className="mt-12 text-micro text-paper/60">
+        <p className="mt-12 text-micro text-on-brick/70">
           © {new Date().getFullYear()} {brand.name}
         </p>
       </div>
@@ -48,7 +48,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-      className="decoration-accent-on-dark underline-offset-4 transition-colors duration-200 hover:text-accent-on-dark hover:underline"
+      className="decoration-paper underline-offset-4 transition-colors duration-200 hover:text-paper hover:underline"
     >
       {children}
     </a>

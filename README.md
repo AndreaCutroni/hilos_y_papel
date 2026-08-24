@@ -69,12 +69,14 @@ transcribed in `src/content/products.ts`.
 
 ## Design notes
 
-The palette is sampled from the brand brochure and pushed to a bolder,
-higher-contrast treatment. Body text and the accent colour both meet WCAG AA
-(4.5:1) against their backgrounds; the ratios are listed in `CLAUDE.md`.
+The palette is built on two brand colours, `#853939` (brick) and `#DCC7AF`
+(sand), with every other tone derived from them as a tint or shade. Body text
+and the accent colour both meet WCAG AA (4.5:1) against their backgrounds; the
+ratios are listed in `CLAUDE.md`.
 
-Typefaces are Fraunces (display) and Nunito (UI and body), served from Google
-Fonts.
+Typefaces, all from Google Fonts: Amiri for the wordmark — bold upright for
+"Hilos" and "Papel", italic for the "y" and for Chiara Castracane's name —
+Fraunces for headlines, and Nunito for UI and body text.
 
 Motion is deliberately quiet — short, ease-out, small distances — and every
 animation has a reduced variant honouring `prefers-reduced-motion`. The thread

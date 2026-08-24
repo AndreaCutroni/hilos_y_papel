@@ -2,33 +2,35 @@
 
 /* ---------------------------------------------------------------------------
    Design tokens — Hilos y Papel
-   Palette derived from the brand brochure (sampled pixel values), pushed to a
-   bolder, higher-contrast treatment. Contrast ratios verified against WCAG AA.
+   Palette built on the two brand colours: #853939 (brick) and #DCC7AF (sand).
+   Every supporting tone is a tint or shade of those two, never an unrelated hue.
+   Contrast ratios verified against WCAG AA and noted beside each token.
 --------------------------------------------------------------------------- */
 @theme {
-  /* Surfaces */
-  --color-paper: #f3eadd;
-  --color-paper-deep: #e9dcc7;
-  --color-wine: #3d1214;
-  --color-wine-soft: #55201f;
+  /* Surfaces — sand is the page, a lighter tint alternates, brick carries
+     the header and footer */
+  --color-paper: #dcc7af;
+  --color-paper-lift: #e9dcca;
+  --color-brick: #853939;
+  --color-brick-deep: #5e2727;
 
-  /* Text — ink 14.4:1 on paper, ink-soft 8.3:1 on paper */
-  --color-ink: #2a1614;
+  /* Text — ink 10.5:1 on paper and 12.2:1 on paper-lift,
+     ink-soft 6.0:1 and 7.3:1 */
+  --color-ink: #2e1a18;
   --color-ink-soft: #63382f;
 
-  /* Accent — 5.42:1 on paper, 4.78:1 on paper-deep */
-  --color-accent: #a83820;
-  /* Accent tint for use on the dark wine surface — 5.34:1 */
-  --color-accent-on-dark: #d97b57;
+  /* Accent is the brick itself — 4.9:1 on paper, 5.9:1 on paper-lift */
+  --color-accent: #853939;
+  /* Text and accents sitting on the brick surface — 6.9:1 */
+  --color-on-brick: #f5ede1;
 
-  /* Thread colours pulled from the real bindings in the product photography */
-  --color-thread-maroon: #9d2b42;
-  --color-thread-gold: #d9a441;
-  --color-thread-navy: #26406b;
+  /* Thread colour matched to the bordeaux linen on the real bindings */
+  --color-thread-maroon: #7a2033;
 
   /* Type */
   --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+  --font-wordmark: 'Amiri', 'Iowan Old Style', Georgia, serif;
 
   /* Type scale */
   --text-micro: 0.75rem;
@@ -110,7 +112,7 @@
     opacity: 0.09;
   }
 
-  /* On the dark wine surface the grain must lighten rather than darken. */
+  /* On the brick surface the grain must lighten rather than darken. */
   .paper-grain-dark::before {
     mix-blend-mode: overlay;
     opacity: 0.16;

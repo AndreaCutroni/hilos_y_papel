@@ -31,7 +31,7 @@ export function Home() {
         </motion.div>
       </section>
 
-      <section className="bg-paper-deep">
+      <section className="bg-paper-lift">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-2 md:px-8 md:py-24">
           <motion.figure variants={rise} {...whileInViewProps} className="m-0">
             <img
@@ -99,7 +99,7 @@ export function Home() {
             <motion.p variants={rise} className="mt-8">
               <Link
                 to="/componi-il-tuo"
-                className="inline-flex items-center rounded-sm bg-accent px-6 py-3 text-label font-bold tracking-wide text-paper uppercase transition-colors duration-200 hover:bg-wine"
+                className="inline-flex items-center rounded-sm bg-brick px-6 py-3 text-label font-bold tracking-wide text-on-brick uppercase transition-colors duration-200 hover:bg-brick-deep"
               >
                 Componi il tuo quaderno
               </Link>

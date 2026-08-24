@@ -12,7 +12,7 @@ export function Header() {
   const reduced = useReducedMotion()
 
   return (
-    <header className="paper-grain paper-grain-dark sticky top-0 z-50 bg-wine text-paper">
+    <header className="paper-grain paper-grain-dark sticky top-0 z-50 bg-brick text-on-brick">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4 md:px-8 md:py-5">
         <Link
           to="/"
@@ -65,7 +65,7 @@ export function Header() {
                       onClick={() => setOpen(false)}
                       className={({ isActive }) =>
                         `block py-3 text-body-lg font-semibold ${
-                          isActive ? 'text-accent-on-dark' : 'text-paper'
+                          isActive ? 'text-on-brick' : 'text-paper'
                         }`
                       }
                     >
@@ -91,7 +91,7 @@ function NavItem({ to, label }: { to: string; label: string }) {
       to={to}
       className={({ isActive }) =>
         `group relative block py-1 text-label font-semibold tracking-wide uppercase transition-colors duration-200 ${
-          isActive ? 'text-accent-on-dark' : 'text-paper hover:text-accent-on-dark'
+          isActive ? 'text-on-brick' : 'text-paper hover:text-on-brick'
         }`
       }
     >
@@ -100,13 +100,13 @@ function NavItem({ to, label }: { to: string; label: string }) {
           {label}
           <span
             aria-hidden="true"
-            className={`absolute -bottom-0.5 left-0 h-px w-full origin-left bg-accent-on-dark transition-transform duration-200 ease-out ${
+            className={`absolute -bottom-0.5 left-0 h-px w-full origin-left transition-transform duration-200 ease-out ${
               isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
             }`}
             style={{
               backgroundImage:
                 'repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 10px)',
-              color: 'var(--color-accent-on-dark)',
+              color: 'var(--color-on-brick)',
               backgroundColor: 'transparent',
             }}
           />
@@ -158,7 +158,7 @@ function HeaderSeam() {
           y1="1.5"
           x2="1200"
           y2="1.5"
-          stroke="var(--color-accent-on-dark)"
+          stroke="var(--color-paper)"
           strokeWidth="3"
           strokeDasharray="22 12"
           opacity="0.85"

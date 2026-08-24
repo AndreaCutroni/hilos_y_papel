@@ -55,7 +55,7 @@ export function Hero() {
             >
               <Link
                 to={hero.primaryCta.to}
-                className="inline-flex items-center rounded-sm bg-accent px-6 py-3 text-label font-bold tracking-wide text-paper uppercase transition-colors duration-200 hover:bg-wine"
+                className="inline-flex items-center rounded-sm bg-brick px-6 py-3 text-label font-bold tracking-wide text-on-brick uppercase transition-colors duration-200 hover:bg-brick-deep"
               >
                 {hero.primaryCta.label}
               </Link>
@@ -110,7 +110,7 @@ export function Hero() {
                 width={868}
                 height={562}
                 alt="Dettaglio della cucitura copta a vista: filo bordeaux che incrocia i fascicoli sul dorso."
-                className="block h-auto w-full rounded-[3px] shadow-[0_10px_30px_-12px_rgba(42,22,20,0.45)]"
+                className="block h-auto w-full rounded-[3px] shadow-[0_10px_30px_-12px_rgba(46,26,24,0.45)]"
                 loading="lazy"
                 decoding="async"
               />

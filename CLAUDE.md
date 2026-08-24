@@ -77,38 +77,48 @@ leave them in place rather than pruning them as unused.
 
 ## Design tokens
 
-Defined in the `@theme` block of `src/index.css`. The palette is **derived from
-the brochure** (sampled pixel values) and pushed to a bolder, higher-contrast
-treatment — do not invent unrelated colours.
+Defined in the `@theme` block of `src/index.css`. The palette is built on **two
+brand colours — `#853939` (brick) and `#DCC7AF` (sand)**. Every other tone is a
+tint or shade of those two; do not introduce an unrelated hue.
 
-| Token                    | Value     | Role                                  |
-| ------------------------ | --------- | ------------------------------------- |
-| `--color-paper`          | `#F3EADD` | page background                       |
-| `--color-paper-deep`     | `#E9DCC7` | alternating section surface           |
-| `--color-wine`           | `#3D1214` | header, footer, dark surfaces         |
-| `--color-ink`            | `#2A1614` | body text                             |
-| `--color-ink-soft`       | `#63382F` | secondary text                        |
-| `--color-accent`         | `#A83820` | accent on light surfaces              |
-| `--color-accent-on-dark` | `#D97B57` | accent on `--color-wine`              |
-| `--color-thread-maroon`  | `#9D2B42` | thread motif (from the real bindings) |
-| `--color-thread-gold`    | `#D9A441` | thread motif                          |
-| `--color-thread-navy`    | `#26406B` | thread motif                          |
+| Token                   | Value     | Role                                  |
+| ----------------------- | --------- | ------------------------------------- |
+| `--color-paper`         | `#DCC7AF` | page background (sand)                |
+| `--color-paper-lift`    | `#E9DCCA` | lighter alternating section surface   |
+| `--color-brick`         | `#853939` | header, footer, buttons               |
+| `--color-brick-deep`    | `#5E2727` | button hover                          |
+| `--color-ink`           | `#2E1A18` | body text                             |
+| `--color-ink-soft`      | `#63382F` | secondary text                        |
+| `--color-accent`        | `#853939` | accent on light surfaces (= brick)    |
+| `--color-on-brick`      | `#F5EDE1` | text and accents on the brick surface |
+| `--color-thread-maroon` | `#7A2033` | thread motif (from the real bindings) |
 
-Verified contrast (WCAG AA needs 4.5:1 for body text):
+Verified contrast (WCAG AA needs 4.5:1 for body text, 3:1 for large):
 
-- ink on paper **14.4:1**, ink on paper-deep **12.7:1**
-- ink-soft on paper **8.3:1**, on paper-deep **7.3:1**
-- accent on paper **5.4:1**, on paper-deep **4.8:1**
-- paper on wine **13.6:1**, accent-on-dark on wine **5.3:1**
+- ink on paper **10.5:1**, on paper-lift **12.2:1**
+- ink-soft on paper **6.0:1**, on paper-lift **7.3:1**
+- accent/brick on paper **4.9:1**, on paper-lift **5.9:1**
+- on-brick on brick **6.9:1**, paper (sand) on brick **4.9:1**
 
-**Re-check contrast whenever a colour changes.** The accent is reserved for
-details — hover/focus, small highlights, the wordmark's swash `y`, button fills
-— never large background fills.
+The tightest pairing on the site is brick-on-sand at 4.86:1, which clears the
+4.5 bar but leaves little headroom — **darkening the brick or lightening the
+sand any further will break AA.** Re-run the audit whenever a colour changes.
+The accent is reserved for details — hover/focus, small highlights, button fills
+— never large background fills; brick as the header and footer surface is the
+one intended large use.
 
-Typography: **Fraunces** (`--font-display`) for headlines and the wordmark,
-**Nunito** (`--font-sans`) for UI, nav, labels and body. Both from Google Fonts,
-loaded in `index.html`. Use the `--text-*` scale (`text-h1`, `text-body-lg`,
-`text-label`…) rather than arbitrary sizes. Spacing follows an 8px rhythm.
+Typography:
+
+- **Amiri** (`--font-wordmark`) for the wordmark and the founder's name only.
+  "Hilos" and "Papel" are **bold upright (700)**; the "y" and "Chiara
+  Castracane" are **italic (400)**. Both live in `components/Wordmark.tsx`
+  (`Wordmark` and `FounderName`) — set them there, not ad hoc.
+- **Fraunces** (`--font-display`) for headlines.
+- **Nunito** (`--font-sans`) for UI, nav, labels and body.
+
+All three come from Google Fonts, loaded in `index.html`. Use the `--text-*`
+scale (`text-h1`, `text-body-lg`, `text-label`…) rather than arbitrary sizes.
+Spacing follows an 8px rhythm.
 
 ## Conventions
 
