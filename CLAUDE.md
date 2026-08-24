@@ -5,8 +5,7 @@ Castracane: hand-sewn notebooks (_quaderni fatti a mano_) plus a hand-bound
 thesis service (_Rilegatura Tesi_).
 
 **The brand name is always spelled "Hilos y Papel"** — in code, filenames,
-metadata and copy. Never "Hylos" (the repository directory name is a typo; do
-not propagate it).
+metadata and copy. Never "Hylos".
 
 **Site language is Italian.** All user-facing copy is Italian. Use typographic
 apostrophes (`’`, U+2019) rather than straight quotes — `dell’Argentina`, not
