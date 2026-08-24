@@ -132,7 +132,14 @@ Spacing follows an 8px rhythm.
 - **`.paper-grain`** sets **no `position`** — it relies on the element already
   being positioned (`relative`/`sticky`/`absolute`). If you add it to a static
   element, add `relative` too, or the grain layer will not show. Pair with
-  `.paper-grain-dark` on dark surfaces so the grain lightens instead of darkens.
+  `.paper-grain-dark` on dark surfaces, which swaps in the finer grain tuned for
+  brick.
+- **The paper fibre texture is colour-neutral on purpose**: it leaves the sand
+  background at exactly `#DCC7AF` (measured drift 0.35/255). That depends on
+  three things in `index.css` — `color-interpolation-filters: sRGB`, forcing the
+  filter's alpha to 1, and centring the noise on mid-grey for `soft-light`. The
+  block comment there spells out why each matters. **If you retune the texture,
+  re-measure the composited background colour** rather than assuming it held.
 - **Drawing a stitch on**: reveal it with an animated clip wipe, not framer's
   `pathLength`. `pathLength` drives `strokeDasharray` internally and flattens a
   running stitch into a solid rule.
