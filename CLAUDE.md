@@ -48,7 +48,7 @@ npm run format:check  # prettier --check
 src/
 ├── assets/images/     # product photography (webp), cropped + graded from the brochure
 ├── components/
-│   ├── hero/          # home hero: AnimatedHeadline, PageTurnReveal, Hero
+│   ├── hero/          # home hero: AnimatedHeadline, Hero
 │   ├── layout/        # Header, Footer, PageTransition
 │   ├── motifs/        # ThreadDivider, CopticSeam — the thread motif
 │   └── Wordmark.tsx
@@ -122,9 +122,10 @@ Spacing follows an 8px rhythm.
 
 ## Conventions
 
-- **Motion**: 200–400ms, ease-out, 8–16px translate distances. The hero page
-  turn is the one deliberate exception at 850ms, because a turning page needs
-  weight to read as paper rather than as a slide.
+- **Motion**: 200–400ms, ease-out, 8–16px translate distances — no exceptions.
+  The hero once opened with an 850ms page-turn reveal; it was removed at the
+  owner's request, so nothing on the site runs long any more. Do not reintroduce
+  a load animation over the hero photograph.
 - **Reduced motion**: every animation needs a reduced or near-instant variant.
   Use `useReducedMotion()` from `@/lib/useReducedMotion` and branch, plus the
   global `prefers-reduced-motion` block in `index.css`.
@@ -135,9 +136,9 @@ Spacing follows an 8px rhythm.
 - **Drawing a stitch on**: reveal it with an animated clip wipe, not framer's
   `pathLength`. `pathLength` drives `strokeDasharray` internally and flattens a
   running stitch into a solid rule.
-- **Craft elements must be meaningful.** The thread motif and the page turn
-  reference how the notebooks are actually made — visible Coptic stitching and
-  real pages. Do not add motion or ornament that means nothing.
+- **Craft elements must be meaningful.** The thread motif references how the
+  notebooks are actually made — the visible Coptic stitching in the product
+  photography. Do not add motion or ornament that means nothing.
 
 ## Aesthetic guardrails
 

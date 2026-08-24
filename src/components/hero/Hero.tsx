@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { hero } from '@/content/brand'
 import { AnimatedHeadline } from './AnimatedHeadline'
-import { PageTurnReveal } from './PageTurnReveal'
 import { CopticSeam } from '@/components/motifs/CopticSeam'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { EASE_OUT } from '@/lib/motion'
@@ -72,8 +71,8 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* Photograph, revealed by the cover swinging open. Width is capped near the
-              image's native 636px below lg so it never upscales into softness. */}
+          {/* Photograph. Width is capped near the image's native 636px below lg so
+              it never upscales into softness. */}
           <motion.div
             initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -82,28 +81,26 @@ export function Hero() {
             }
             className="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:max-w-none"
           >
-            <PageTurnReveal delay={0.55} className="overflow-hidden rounded-[3px]">
-              <figure className="relative m-0">
-                <img
-                  src={notebookOpen}
-                  width={636}
-                  height={597}
-                  alt="Quaderno rigido A6 orizzontale aperto: copertina verde con soffioni ricamati a filo e pagine in carta riciclata."
-                  className="block h-auto w-full rounded-[3px] object-cover"
-                  fetchPriority="high"
-                  decoding="async"
-                />
-              </figure>
-            </PageTurnReveal>
+            <figure className="relative m-0 overflow-hidden rounded-[3px]">
+              <img
+                src={notebookOpen}
+                width={636}
+                height={597}
+                alt="Quaderno rigido A6 orizzontale aperto: copertina verde con soffioni ricamati a filo e pagine in carta riciclata."
+                className="block h-auto w-full rounded-[3px] object-cover"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </figure>
 
-            {/* Detail of the real Coptic binding, offset over the main photo */}
+            {/* Detail of the real Coptic binding, offset off the right edge */}
             <motion.figure
               initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={
-                reduced ? { duration: 0.01 } : { duration: 0.4, ease: EASE_OUT, delay: 1.45 }
+                reduced ? { duration: 0.01 } : { duration: 0.4, ease: EASE_OUT, delay: 0.7 }
               }
-              className="absolute -bottom-10 -left-4 m-0 hidden w-44 sm:block lg:-left-12 lg:w-56"
+              className="absolute -right-4 -bottom-10 m-0 hidden w-44 sm:block lg:-right-12 lg:w-56"
             >
               <img
                 src={stitchDetail}
@@ -114,14 +111,12 @@ export function Hero() {
                 loading="lazy"
                 decoding="async"
               />
-              <figcaption className="mt-2 text-micro font-semibold tracking-wide text-ink-soft uppercase">
-                Cucitura copta, a vista
-              </figcaption>
             </motion.figure>
 
-            {/* The seam runs down the outer edge, echoing the spine in the photo */}
-            <div className="pointer-events-none absolute top-6 -right-5 bottom-6 hidden lg:block">
-              <CopticSeam rows={12} delay={1.1} showSignatures={false} />
+            {/* The seam straddles the left edge, sitting where a spine would —
+                centred on that edge rather than running the full height. */}
+            <div className="pointer-events-none absolute top-1/2 left-0 hidden h-[72%] -translate-x-1/2 -translate-y-1/2 lg:block">
+              <CopticSeam rows={12} delay={0.5} showSignatures={false} />
             </div>
           </motion.div>
         </div>

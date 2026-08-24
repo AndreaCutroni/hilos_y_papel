@@ -38,7 +38,7 @@ The dev server runs at http://localhost:5173.
 src/
 ├── assets/images/   Product photography (webp)
 ├── components/
-│   ├── hero/        Home hero — animated headline, page-turn reveal
+│   ├── hero/        Home hero — animated headline, photography
 │   ├── layout/      Header, Footer, page transitions
 │   ├── motifs/      Thread motifs drawn as inline SVG
 │   └── Wordmark.tsx
@@ -80,5 +80,5 @@ Fraunces for headlines, and Nunito for UI and body text.
 
 Motion is deliberately quiet — short, ease-out, small distances — and every
 animation has a reduced variant honouring `prefers-reduced-motion`. The thread
-motifs and the hero's page turn reference how the notebooks are genuinely made:
-exposed Coptic stitching and real turning pages.
+motifs reference how the notebooks are genuinely made: the seam traces the
+exposed Coptic stitching visible in the product photography.
