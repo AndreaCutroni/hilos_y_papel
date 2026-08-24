@@ -35,12 +35,3 @@ export function ComponiIlTuo() {
     />
   )
 }
-
-export function ChiSono() {
-  return (
-    <Placeholder
-      title="Chi sono"
-      intro="La storia di Chiara Castracane, dalla rilegatura imparata in Argentina al banco di lavoro di oggi."
-    />
-  )
-}

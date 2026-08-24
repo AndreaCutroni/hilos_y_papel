@@ -138,6 +138,260 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Sketchbook (/chi-sono)
+
+   The turning leaf is a real curved surface, not a flat door: a chain of nested
+   strips whose tangent sweeps through an arc, so paper bends the way paper
+   bends. Each strip is a child of the one before it, so its rotation compounds
+   — that is what makes the chain trace a curve. Driven per frame from
+   Sketchbook.tsx by writing --tt (total swing), --td (per-strip delta) and
+   --shade; nothing here re-renders through React while a page is in flight.
+--------------------------------------------------------------------------- */
+@layer components {
+  .sb-3d {
+    perspective: 1750px;
+    perspective-origin: 50% 46%;
+  }
+
+  .sb-tilt {
+    transform-style: preserve-3d;
+    transform: scale(var(--zoom, 1));
+    will-change: transform;
+  }
+
+  .sb-book {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1600 / 1040;
+    transform-style: preserve-3d;
+  }
+
+  /* the two halves lying flat on the desk */
+  .sb-half {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    overflow: hidden;
+    container-type: inline-size;
+  }
+  .sb-half.left {
+    left: 0;
+  }
+  .sb-half.right {
+    left: 50%;
+  }
+
+  /* the shadow the lifting leaf throws into the gutter */
+  .sb-gutter {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 42%;
+    pointer-events: none;
+    opacity: calc(var(--shade, 0) * 0.55);
+  }
+  .sb-gutter.left {
+    right: 0;
+    background: linear-gradient(270deg, rgba(46, 26, 24, 0.28), rgba(46, 26, 24, 0) 80%);
+  }
+  .sb-gutter.right {
+    left: 0;
+    background: linear-gradient(90deg, rgba(46, 26, 24, 0.22), rgba(46, 26, 24, 0) 80%);
+  }
+
+  /* ---- the turning leaf ---- */
+  .sb-curl {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: calc(var(--bw, 0px) * 0.5);
+    transform-style: preserve-3d;
+    z-index: 6;
+  }
+  .sb-curl.next {
+    left: 50%;
+    transform-origin: left center;
+    transform: rotateY(calc(-1 * var(--tt, 0deg)));
+  }
+  .sb-curl.prev {
+    right: 50%;
+    transform-origin: right center;
+    transform: rotateY(var(--tt, 0deg));
+  }
+
+  .sb-strip {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: calc(var(--bw, 0px) * 0.5 / var(--n));
+    transform-style: preserve-3d;
+  }
+  .sb-curl.next .sb-strip {
+    left: 0;
+    transform-origin: left center;
+  }
+  .sb-curl.prev .sb-strip {
+    right: 0;
+    transform-origin: right center;
+  }
+  /* every strip after the first hangs off the end of its parent, and its own
+     rotation adds to everything above it — this is the curve */
+  .sb-curl.next .sb-strip .sb-strip {
+    left: 100%;
+    transform: rotateY(var(--td, 0deg));
+  }
+  .sb-curl.prev .sb-strip .sb-strip {
+    right: 100%;
+    left: auto;
+    transform: rotateY(calc(-1 * var(--td, 0deg)));
+  }
+
+  .sb-face {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    /* a hair of overlap, so no seam shows between strips */
+    right: -1.1px;
+    overflow: hidden;
+    backface-visibility: hidden;
+    background: var(--color-paper);
+  }
+  .sb-face.back {
+    transform: rotateY(180deg);
+  }
+  /* the page inside the slice: full width, shifted so this strip shows its part */
+  .sb-slice {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: var(--pw, 100%);
+    container-type: inline-size;
+  }
+  /* Shading in the trough of the curve. --a2 of one strip equals --a1 of the
+     next, so the ramps meet exactly and the surface reads as continuous. The
+     back face is mirrored, so its gradient has to run the other way — get this
+     wrong and a hard seam appears down every strip. */
+  .sb-face .sh {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .sb-curl.next .sb-face.front .sh,
+  .sb-curl.prev .sb-face.back .sh {
+    background: linear-gradient(
+      90deg,
+      rgba(46, 26, 24, var(--a1, 0)),
+      rgba(46, 26, 24, var(--a2, 0))
+    );
+  }
+  .sb-curl.next .sb-face.back .sh,
+  .sb-curl.prev .sb-face.front .sh {
+    background: linear-gradient(
+      90deg,
+      rgba(46, 26, 24, var(--a2, 0)),
+      rgba(46, 26, 24, var(--a1, 0))
+    );
+  }
+  /* Sheen: a flat tint per strip, never a gradient. A gradient inside each
+     strip would restart at every boundary and band the whole leaf. */
+  .sb-face .gl {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: #fffaf0;
+    opacity: calc(var(--shade, 0) * var(--lit, 1) * var(--lit, 1) * 0.16);
+  }
+
+  /* the pool of shadow the closed book rests in */
+  .sb-cast {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sb-cast.ambient {
+    left: 4%;
+    right: 4%;
+    top: 10%;
+    bottom: -4%;
+    background: radial-gradient(
+      50% 50% at 50% 58%,
+      rgba(46, 26, 24, 0.3) 0%,
+      rgba(46, 26, 24, 0.16) 42%,
+      rgba(46, 26, 24, 0) 74%
+    );
+    filter: blur(26px);
+    opacity: calc(1 - var(--shade, 0) * 0.4);
+  }
+  .sb-cast.contact {
+    left: 10%;
+    right: 10%;
+    top: 78%;
+    bottom: -6%;
+    background: radial-gradient(
+      50% 46% at 50% 40%,
+      rgba(46, 26, 24, 0.36) 0%,
+      rgba(46, 26, 24, 0) 78%
+    );
+    filter: blur(10px);
+    opacity: calc(1 - var(--shade, 0) * 0.5);
+  }
+
+  /* ---- the glass ---- */
+  .sb-loupe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--lr, 200px);
+    height: var(--lr, 200px);
+    border-radius: 50%;
+    z-index: 20;
+    cursor: grab;
+    touch-action: none;
+  }
+  .sb-loupe.held {
+    cursor: grabbing;
+  }
+  .sb-loupe .rim {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow:
+      inset 0 0 0 2px rgba(46, 26, 24, 0.5),
+      inset 0 0 0 7px var(--color-paper-lift),
+      inset 0 0 0 9px rgba(46, 26, 24, 0.28),
+      0 10px 24px -10px rgba(46, 26, 24, 0.6);
+  }
+  /* a slip of light across the glass so it reads as glass, not a hole */
+  .sb-loupe .shine {
+    position: absolute;
+    inset: 9px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: linear-gradient(
+      140deg,
+      rgba(255, 255, 255, 0.34) 0%,
+      rgba(255, 255, 255, 0.06) 34%,
+      rgba(255, 255, 255, 0) 52%
+    );
+  }
+  .sb-zoomwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 19;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .sb-zoominner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

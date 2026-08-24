@@ -39,6 +39,7 @@ src/
 ├── assets/images/   Product photography (webp)
 ├── components/
 │   ├── hero/        Home hero — animated headline, photography
+│   ├── sketchbook/  The /chi-sono sketchbook — plates, page turn, loupe
 │   ├── layout/      Header, Footer, page transitions
 │   ├── motifs/      Thread motifs drawn as inline SVG
 │   └── Wordmark.tsx
@@ -57,11 +58,11 @@ references/          Brand brochure — source of truth for voice and identity
 | Path              | Status      |
 | ----------------- | ----------- |
 | `/`               | Built       |
+| `/chi-sono`       | Built       |
 | `/quaderni`       | Placeholder |
 | `/tipologie`      | Placeholder |
 | `/carte`          | Placeholder |
 | `/componi-il-tuo` | Placeholder |
-| `/chi-sono`       | Placeholder |
 
 The data behind the placeholder pages — the notebook configurator options,
 worked examples with pricing, and the thesis-binding specification — is already

@@ -66,14 +66,41 @@ keep the two in sync.
 
 ## Routes
 
-`/` is the only designed page. `/quaderni`, `/tipologie`, `/carte`,
-`/componi-il-tuo` and `/chi-sono` render `Placeholder` via `pages/stubs.tsx`
-and are waiting to be built from the data already sitting in
-`content/products.ts`.
+`/` and `/chi-sono` are built. `/quaderni`, `/tipologie`, `/carte` and
+`/componi-il-tuo` render `Placeholder` via `pages/stubs.tsx` and are waiting to
+be built from the data already sitting in `content/products.ts`.
 
-`assets/images/chiara.webp` and `assets/images/notebook-blue.webp` are not
-imported yet — they are staged for `/chi-sono` and `/quaderni` respectively, so
-leave them in place rather than pruning them as unused.
+`assets/images/notebook-blue.webp` is not imported yet — it is staged for
+`/quaderni`, so leave it in place rather than pruning it as unused.
+
+### The sketchbook on `/chi-sono`
+
+Nine plates, each a spread: the drawing on the verso, the note on the recto.
+Content lives in `content/sketchbook.ts` and is transcribed from the brochure;
+the drawings in `components/sketchbook/plates.tsx` are original line art of
+steps the brochure actually describes. Keep both true to the brochure — no
+invented process detail, no clip art.
+
+Two presentations, chosen by `useMediaQuery('(min-width: 768px)')`:
+
+- **≥768px** — the dragged spread with the curling leaf, the loupe and zoom.
+- **<768px** — `PlateCard`, the plate stacked in one column with a quiet
+  crossfade. A two-page spread cannot hold this much type at phone width, and
+  the loupe is a pointer affordance, so both are dropped rather than shrunk.
+
+The turning leaf is a chain of **nested** strips (`components/sketchbook` +
+the `@layer components` block in `index.css`). Each strip is a child of the one
+before it so rotations compound, which is what traces the curve. Two details are
+easy to get wrong and both show up as hard vertical seams:
+
+- The sheen (`.gl`) must be a **flat tint per strip**, never a gradient — a
+  gradient restarts at every strip boundary and bands the whole leaf.
+- The trough shading (`.sh`) runs `--a1 → --a2` on front faces and
+  `--a2 → --a1` on back faces, because a back face is mirrored.
+
+The arc is driven per frame by writing `--tt`, `--td` and `--shade` straight to
+the DOM from `Sketchbook.tsx`; React does not re-render while a page is in
+flight. Under `prefers-reduced-motion` the leaf snaps rather than springs.
 
 ## Design tokens
 
