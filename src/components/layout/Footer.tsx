@@ -4,20 +4,20 @@ import { ThreadDivider } from '@/components/motifs/ThreadDivider'
 
 export function Footer() {
   return (
-    <footer className="paper-grain paper-grain-dark relative mt-24 bg-brick text-on-brick">
+    <footer className="paper-grain paper-grain-dark relative mt-16 bg-brick text-on-brick">
       <ThreadDivider color="var(--color-paper)" animate={false} className="opacity-70" />
-      <div className="mx-auto max-w-6xl px-6 py-12 md:px-8 md:py-16">
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+      <div className="mx-auto max-w-6xl px-6 py-8 md:px-8 md:py-10">
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-h3 leading-none">
+            <p className="text-h4 leading-none">
               <Wordmark />
             </p>
-            <p className="mt-3 text-body text-on-brick/80">
-              {brand.tagline} · <FounderName className="text-body-lg" />
+            <p className="mt-2 text-label text-on-brick/80">
+              {brand.tagline} · <FounderName />
             </p>
           </div>
 
-          <ul className="flex flex-col gap-3 text-body">
+          <ul className="flex flex-col gap-2 text-label">
             <li>
               <FooterLink href={`mailto:${contact.email}`}>{contact.email}</FooterLink>
             </li>
@@ -34,7 +34,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <p className="mt-12 text-micro text-on-brick/70">
+        <p className="mt-6 text-micro text-on-brick/70">
           © {new Date().getFullYear()} {brand.name}
         </p>
       </div>
