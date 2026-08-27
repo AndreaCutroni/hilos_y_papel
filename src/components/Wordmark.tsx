@@ -1,25 +1,19 @@
 type Props = {
   className?: string
-  /** Colour of the italic "y". Defaults to the sand tint, for use on brick. */
-  accentColor?: string
 }
 
 /**
  * "Hilos y Papel" set in Amiri: the two nouns in bold upright, the conjunction
  * in italic so it reads as a swash linking them — the relationship the brochure
  * wordmark draws between "threads" and "paper".
+ *
+ * Deliberately one colour throughout: it inherits `currentColor`, so the caller
+ * decides. The italic "y" carries the contrast on its own.
  */
-export function Wordmark({ className = '', accentColor }: Props) {
+export function Wordmark({ className = '' }: Props) {
   return (
     <span className={`font-wordmark font-bold tracking-tight ${className}`}>
-      Hilos{' '}
-      <span
-        className="font-normal italic tracking-normal"
-        style={{ color: accentColor ?? 'var(--color-paper)' }}
-      >
-        y
-      </span>{' '}
-      Papel
+      Hilos <span className="font-normal italic tracking-normal">y</span> Papel
     </span>
   )
 }

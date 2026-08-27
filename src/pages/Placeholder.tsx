@@ -10,7 +10,7 @@ type Props = {
 /** Stand-in for the pages not yet designed. Proves routing and page transitions. */
 export function Placeholder({ title, intro }: Props) {
   return (
-    <section className="paper-grain relative bg-paper">
+    <section className="relative bg-paper">
       <div className="mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-28">
         <motion.div variants={riseStagger(0.08)} initial="hidden" animate="visible">
           <motion.p

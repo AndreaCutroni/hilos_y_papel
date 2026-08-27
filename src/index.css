@@ -31,6 +31,8 @@
   --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
   --font-wordmark: 'Amiri', 'Iowan Old Style', Georgia, serif;
+  /* Handwriting, for the hero line that writes itself in */
+  --font-hand: 'Caveat', 'Segoe Script', cursive;
 
   /* Type scale */
   --text-micro: 0.75rem;
@@ -88,51 +90,6 @@
 }
 
 @layer utilities {
-  /* Paper fibre. Two turbulence layers — coarse pulp clumps plus a finer speck —
-     that read as cold-pressed stock. Sits behind content via a pseudo-element so
-     it never tints text. Deliberately sets no `position`: the element it is
-     applied to supplies its own (relative/sticky/absolute), so this never fights
-     a positioning utility.
-
-     Colour-neutral by construction, so the sand background stays exactly
-     #DCC7AF. Three details make that work, and all three must stay:
-       1. `color-interpolation-filters: sRGB` — the SVG default is linearRGB,
-          where feTurbulence's mean lands at 0.73 once displayed, not 0.5.
-       2. `feFuncA slope=0 intercept=1` — turbulence writes noise into alpha too;
-          without this the layer is patchily transparent and lightens the base.
-       3. The RGB intercepts centre the noise on mid-grey, which `soft-light`
-          leaves untouched, plus a +0.03 bump that cancels the slight darkening
-          from soft-light's asymmetry.
-     Measured drift after compositing: 0.35/255. Re-measure if you retune these. */
-  .paper-grain {
-    isolation: isolate;
-  }
-
-  .paper-grain::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='c' x='0' y='0' width='300' height='300' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='5' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.6' intercept='-0.27'/%3E%3CfeFuncG type='linear' slope='1.6' intercept='-0.27'/%3E%3CfeFuncB type='linear' slope='1.6' intercept='-0.27'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23c)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s' x='0' y='0' width='160' height='160' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.5' intercept='-0.22'/%3E%3CfeFuncG type='linear' slope='1.5' intercept='-0.22'/%3E%3CfeFuncB type='linear' slope='1.5' intercept='-0.22'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)'/%3E%3C/svg%3E");
-    background-size:
-      300px 300px,
-      160px 160px;
-    mix-blend-mode: soft-light;
-    opacity: 0.75;
-  }
-
-  /* The brick surfaces keep the older, finer grain: the fibre texture above is
-     tuned to leave the sand untouched, and on brick it drifts ~4/255. */
-  .paper-grain-dark::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23f)' opacity='0.42'/%3E%3C/svg%3E");
-    background-size: 220px 220px;
-    mix-blend-mode: overlay;
-    opacity: 0.16;
-  }
-
   .text-balance {
     text-wrap: balance;
   }

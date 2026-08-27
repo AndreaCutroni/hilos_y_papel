@@ -1,37 +1,54 @@
 import { useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { navigation } from '@/content/brand'
-import { Wordmark } from '@/components/Wordmark'
+import { FounderName, Wordmark } from '@/components/Wordmark'
+import { SocialIcons } from '@/components/SocialLinks'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { transition } from '@/lib/motion'
+import marchio from '@/assets/images/marchio-mano.webp'
 
 export function Header() {
   const [open, setOpen] = useState(false)
-  const location = useLocation()
   const reduced = useReducedMotion()
 
   return (
-    <header className="paper-grain paper-grain-dark sticky top-0 z-50 bg-brick text-on-brick">
+    <header className="sticky top-0 z-50 bg-brick text-on-brick">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4 md:px-8 md:py-5">
+        {/* The mark echoes the brochure cover: a round photograph of the work in
+            progress, set beside the wordmark with the founder's name beneath. */}
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="text-h4 leading-none md:text-h3"
-          aria-label="Hilos y Papel — home"
+          className="group flex items-center gap-3 text-paper"
+          aria-label="Hilos y Papel, Chiara Castracane — home"
         >
-          <Wordmark />
+          <img
+            src={marchio}
+            width={240}
+            height={240}
+            alt=""
+            aria-hidden="true"
+            className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-paper/35 md:h-13 md:w-13"
+          />
+          <span className="flex flex-col leading-none">
+            <Wordmark className="text-h4 leading-none md:text-h3" />
+            <FounderName className="mt-1 text-label leading-none text-paper/85 md:text-body" />
+          </span>
         </Link>
 
-        <nav aria-label="Principale" className="hidden md:block">
-          <ul className="flex items-center gap-7">
-            {navigation.map((item) => (
-              <li key={item.to}>
-                <NavItem to={item.to} label={item.label} />
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <div className="hidden items-center gap-6 md:flex">
+          <nav aria-label="Principale">
+            <ul className="flex items-center gap-7">
+              {navigation.map((item) => (
+                <li key={item.to}>
+                  <NavItem to={item.to} label={item.label} />
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <SocialIcons className="-mr-2" />
+        </div>
 
         <button
           type="button"
@@ -74,13 +91,11 @@ export function Header() {
                   </li>
                 ))}
               </ul>
+              <SocialIcons className="-ml-2 border-t border-paper/15 pt-3" />
             </nav>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Stitch line along the header's bottom edge — the seam where it meets the page. */}
-      <HeaderSeam key={location.pathname} />
     </header>
   )
 }
@@ -146,24 +161,5 @@ function MenuGlyph({ open }: { open: boolean }) {
         transition={{ duration: 0.22, ease: 'easeOut' }}
       />
     </svg>
-  )
-}
-
-function HeaderSeam() {
-  return (
-    <div aria-hidden="true" className="h-[3px] w-full overflow-hidden">
-      <svg viewBox="0 0 1200 3" preserveAspectRatio="none" className="h-full w-full" fill="none">
-        <line
-          x1="0"
-          y1="1.5"
-          x2="1200"
-          y2="1.5"
-          stroke="var(--color-paper)"
-          strokeWidth="3"
-          strokeDasharray="22 12"
-          opacity="0.85"
-        />
-      </svg>
-    </div>
   )
 }

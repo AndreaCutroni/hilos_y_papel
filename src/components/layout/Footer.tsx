@@ -1,15 +1,14 @@
-import { brand, contact } from '@/content/brand'
+import { brand } from '@/content/brand'
 import { FounderName, Wordmark } from '@/components/Wordmark'
-import { ThreadDivider } from '@/components/motifs/ThreadDivider'
+import { socials } from '@/components/socials'
 
 export function Footer() {
   return (
-    <footer className="paper-grain paper-grain-dark relative mt-16 bg-brick text-on-brick">
-      <ThreadDivider color="var(--color-paper)" animate={false} className="opacity-70" />
+    <footer className="relative mt-16 bg-brick text-on-brick">
       <div className="mx-auto max-w-6xl px-6 py-8 md:px-8 md:py-10">
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-h4 leading-none">
+            <p className="text-h4 leading-none text-paper">
               <Wordmark />
             </p>
             <p className="mt-2 text-label text-on-brick/80">
@@ -18,19 +17,19 @@ export function Footer() {
           </div>
 
           <ul className="flex flex-col gap-2 text-label">
-            <li>
-              <FooterLink href={`mailto:${contact.email}`}>{contact.email}</FooterLink>
-            </li>
-            <li>
-              <FooterLink href={contact.instagram.url}>
-                Instagram · {contact.instagram.handle}
-              </FooterLink>
-            </li>
-            <li>
-              <FooterLink href={contact.facebook.url}>
-                Facebook · {contact.facebook.handle}
-              </FooterLink>
-            </li>
+            {socials.map(({ key, short, href, Icon, external, label }) => (
+              <li key={key}>
+                <a
+                  href={href}
+                  aria-label={label}
+                  {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                  className="group inline-flex items-center gap-2.5 underline-offset-4 transition-colors duration-200 hover:text-paper hover:underline"
+                >
+                  <Icon className="h-[17px] w-[17px] shrink-0 opacity-80 transition-opacity duration-200 group-hover:opacity-100" />
+                  {short}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -39,18 +38,5 @@ export function Footer() {
         </p>
       </div>
     </footer>
-  )
-}
-
-function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const external = href.startsWith('http')
-  return (
-    <a
-      href={href}
-      {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-      className="decoration-paper underline-offset-4 transition-colors duration-200 hover:text-paper hover:underline"
-    >
-      {children}
-    </a>
   )
 }

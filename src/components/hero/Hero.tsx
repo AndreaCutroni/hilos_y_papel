@@ -5,12 +5,15 @@ import { AnimatedHeadline } from './AnimatedHeadline'
 import { CopticSeam } from '@/components/motifs/CopticSeam'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { EASE_OUT } from '@/lib/motion'
+import { handwritingTiming } from '@/lib/handwriting'
 import notebookOpen from '@/assets/images/notebook-open-green.webp'
 import stitchDetail from '@/assets/images/stitch-detail.webp'
 
 export function Hero() {
   const reduced = useReducedMotion()
-  const settle = hero.headline.length * 0.075 + 0.5
+  const HEAD_START = 0.3
+  /* Everything under the headline waits for the pen to finish. */
+  const settle = handwritingTiming(hero.headline, HEAD_START).settled
 
   const fadeUp = (delay: number) =>
     reduced
@@ -22,7 +25,7 @@ export function Hero() {
         }
 
   return (
-    <section className="paper-grain relative overflow-hidden bg-paper">
+    <section className="relative overflow-hidden bg-paper">
       <div className="mx-auto max-w-6xl px-6 pt-14 pb-20 md:px-8 md:pt-20 md:pb-28 lg:pt-24">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           {/* Copy */}
@@ -34,11 +37,13 @@ export function Hero() {
               {hero.eyebrow}
             </motion.p>
 
+            {/* Caveat has a small eye, so it is set well above the display size
+                Fraunces used here to carry the same weight on the page. */}
             <AnimatedHeadline
               words={hero.headline}
               threadWord={hero.headline.length - 1}
-              startDelay={0.25}
-              className="mt-5 text-[2.5rem] leading-[1.04] font-semibold text-ink sm:text-h1 lg:text-display"
+              startDelay={HEAD_START}
+              className="mt-5 text-[3.4rem] leading-[1.02] font-medium text-ink sm:text-[4.6rem] lg:text-[5.9rem]"
             />
 
             <motion.p

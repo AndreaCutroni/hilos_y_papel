@@ -11,7 +11,7 @@ import chiara from '@/assets/images/chiara.webp'
 export function ChiSono() {
   return (
     <>
-      <section className="paper-grain relative bg-paper">
+      <section className="relative bg-paper">
         <div className="mx-auto max-w-6xl px-6 pt-16 pb-10 md:px-8 md:pt-20">
           <motion.div variants={riseStagger(0.08)} initial="hidden" animate="visible">
             <motion.p
