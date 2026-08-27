@@ -11,9 +11,6 @@ import { useMediaQuery } from '@/lib/useMediaQuery'
 const N = 12
 /** Peak curl of the arc, in radians. */
 const BETA = 0.6
-const MAG = 2.1
-const ZOOM_MIN = 0.9
-const ZOOM_MAX = 1.6
 const M = plates.length
 
 type Dir = 'next' | 'prev'
@@ -27,7 +24,6 @@ export function Sketchbook() {
 
   const [idx, setIdx] = useState(0)
   const [turn, setTurn] = useState<Turn | null>(null)
-  const [zoom, setZoom] = useState(1)
   const [hintGone, setHintGone] = useState(false)
 
   const stageRef = useRef<HTMLDivElement>(null)
@@ -198,118 +194,6 @@ export function Sketchbook() {
     if (turn) applyTurn(tRef.current)
   }, [turn, applyTurn])
 
-  /* ----------------------------------------------------------- loupe */
-  const loupeRef = useRef<HTMLDivElement>(null)
-  const zoomWrapRef = useRef<HTMLDivElement>(null)
-  const zoomInnerRef = useRef<HTMLDivElement>(null)
-  const posRef = useRef<{ x: number; y: number } | null>(null)
-  const grabRef = useRef<{ cx: number; cy: number; x0: number; y0: number } | null>(null)
-  const [loupeOn, setLoupeOn] = useState(true)
-
-  const loupeSize = () => {
-    const w = bookRef.current?.clientWidth ?? 600
-    return Math.round(Math.max(130, Math.min(230, w * 0.24)))
-  }
-
-  const placeLoupe = useCallback(() => {
-    const book = bookRef.current
-    const lo = loupeRef.current
-    const wrap = zoomWrapRef.current
-    const inner = zoomInnerRef.current
-    const p = posRef.current
-    if (!book || !lo || !wrap || !inner || !p) return
-    const bw = book.clientWidth
-    const bh = book.clientHeight
-    if (!bw) return
-    const R = loupeSize() / 2
-    lo.style.setProperty('--lr', R * 2 + 'px')
-    lo.style.transform = `translate3d(${(p.x - R).toFixed(1)}px,${(p.y - R).toFixed(1)}px,0)`
-    /* the magnified copy has to match the book it mirrors */
-    inner.style.width = bw + 'px'
-
-    /* how far inside the paper the glass is, so it fades as it wanders off */
-    const cx = bw / 2
-    const cy = bh / 2
-    const z = zoom
-    const x0 = cx + (0 - cx) * z
-    const x1 = cx + (bw - cx) * z
-    const y0 = cy + (0 - cy) * z
-    const y1 = cy + (bh - cy) * z
-    const nx = Math.max(x0, Math.min(p.x, x1))
-    const ny = Math.max(y0, Math.min(p.y, y1))
-    const inside =
-      p.x > x0 && p.x < x1 && p.y > y0 && p.y < y1
-        ? Math.min(p.x - x0, x1 - p.x, p.y - y0, y1 - p.y)
-        : -Math.hypot(p.x - nx, p.y - ny)
-    const k = Math.max(0, Math.min(1, (inside + R * 0.3) / (R * 0.55)))
-    const vis = loupeOn && !turnRef.current ? k : 0
-    wrap.style.opacity = vis.toFixed(3)
-    if (vis <= 0.002) return
-    const r = (R - R * 0.075).toFixed(1)
-    const mask = `radial-gradient(circle ${r}px at ${p.x.toFixed(1)}px ${p.y.toFixed(1)}px,#000 calc(100% - 1px),transparent 100%)`
-    wrap.style.webkitMaskImage = mask
-    wrap.style.maskImage = mask
-    /* magnify about the point under the glass, so it stays put */
-    const px = cx + (p.x - cx) / z
-    const py = cy + (p.y - cy) / z
-    const s = MAG * z
-    inner.style.transform = `translate(${(p.x - px * s).toFixed(1)}px,${(p.y - py * s).toFixed(1)}px) scale(${s.toFixed(4)})`
-  }, [zoom, loupeOn])
-
-  /* park the glass on the lower right once the book has a size */
-  useLayoutEffect(() => {
-    const book = bookRef.current
-    if (!book || posRef.current) return
-    const set = () => {
-      const b = bookRef.current
-      if (!b || !b.clientWidth) return
-      /* parked over the drawing, so the glass has something to show */
-      posRef.current = { x: b.clientWidth * 0.3, y: b.clientHeight * 0.56 }
-      placeLoupe()
-    }
-    set()
-    const ro = new ResizeObserver(set)
-    ro.observe(book)
-    return () => ro.disconnect()
-  }, [placeLoupe])
-
-  useEffect(() => {
-    placeLoupe()
-  }, [placeLoupe, idx, turn, zoom])
-
-  /* the leaf sweeps the glass aside rather than turning underneath it */
-  const shoveLoupe = (dir: Dir) => {
-    const book = bookRef.current
-    const p = posRef.current
-    if (!book || !p || grabRef.current) return
-    p.x = book.clientWidth * (dir === 'next' ? 0.16 : 0.84)
-    p.y = book.clientHeight * 0.8
-    placeLoupe()
-  }
-
-  const onLoupeDown = (e: React.PointerEvent) => {
-    if (e.button !== 0 || !posRef.current) return
-    e.preventDefault()
-    e.stopPropagation()
-    setHintGone(true)
-    grabRef.current = { cx: e.clientX, cy: e.clientY, x0: posRef.current.x, y0: posRef.current.y }
-    loupeRef.current?.classList.add('held')
-    loupeRef.current?.setPointerCapture(e.pointerId)
-  }
-  const onLoupeMove = (e: React.PointerEvent) => {
-    const g = grabRef.current
-    const p = posRef.current
-    const book = bookRef.current
-    if (!g || !p || !book) return
-    p.x = Math.max(-40, Math.min(book.clientWidth + 40, g.x0 + (e.clientX - g.cx)))
-    p.y = Math.max(-40, Math.min(book.clientHeight + 40, g.y0 + (e.clientY - g.cy)))
-    placeLoupe()
-  }
-  const onLoupeUp = () => {
-    grabRef.current = null
-    loupeRef.current?.classList.remove('held')
-  }
-
   /* ------------------------------------------------------------- drag */
   const dragRef = useRef<{
     dir: Dir
@@ -323,7 +207,7 @@ export function Sketchbook() {
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return
     const target = e.target as HTMLElement
-    if (target.closest('.sb-loupe') || target.closest('button')) return
+    if (target.closest('button')) return
     const book = bookRef.current
     if (!book) return
     const r = book.getBoundingClientRect()
@@ -334,7 +218,6 @@ export function Sketchbook() {
     const dir: Dir = (e.clientX - r.left) / r.width > 0.5 ? 'next' : 'prev'
     startTurn(dir, 0)
     dragRef.current = { dir, x0: e.clientX, w: r.width, moved: 0, vel: 0, tp: performance.now() }
-    shoveLoupe(dir)
   }
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -423,17 +306,7 @@ export function Sketchbook() {
             <PlateCard plate={current} />
           </motion.div>
         </AnimatePresence>
-        <Controls
-          idx={idx}
-          turn={turn}
-          zoom={zoom}
-          setZoom={setZoom}
-          step={step}
-          loupeOn={false}
-          setLoupeOn={setLoupeOn}
-          showGlass={false}
-          showZoom={false}
-        />
+        <Pager idx={idx} turn={turn} step={step} />
         <PlateList plates={plates} activeIdx={turn ? turn.to : idx} goTo={goTo} />
         <p className="sr-only" aria-live="polite">
           Tavola {(turn ? turn.to : idx) + 1} di {M}: {current.title}. {current.lede}
@@ -446,30 +319,29 @@ export function Sketchbook() {
     <div className="w-full">
       <div
         ref={stageRef}
-        className="relative touch-pan-y select-none"
+        className="relative mx-auto flex max-w-5xl touch-pan-y items-center gap-1 select-none sm:gap-3"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onDragStart={(e) => e.preventDefault()}
       >
-        <div ref={hostRef} className="sb-3d relative mx-auto w-full max-w-4xl">
+        <SideArrow label="Tavola precedente" onClick={() => step('prev')}>
+          <path d="M15 5L8 13l7 8" />
+        </SideArrow>
+
+        <div ref={hostRef} className="sb-3d relative min-w-0 flex-1 md:max-w-4xl">
           <div className="sb-cast ambient" />
           <div className="sb-cast contact" />
+          <div className="sb-cast edge" />
 
-          <div className="sb-tilt" style={{ ['--zoom' as string]: zoom }}>
-            <div
-              ref={bookRef}
-              className="sb-book bg-paper-lift shadow-[0_1px_0_rgba(46,26,24,0.18)]"
-            >
-              <div className="sb-half left">
-                {staticLeft}
-                <div className="sb-gutter left" />
-              </div>
-              <div className="sb-half right">
-                {staticRight}
-                <div className="sb-gutter right" />
-              </div>
+          <div className="sb-tilt">
+            <div ref={bookRef} className="sb-book sb-paper">
+              {/* the fold, and the sewing running down it */}
+              <div className="sb-fold" aria-hidden="true" />
+              <div className="sb-seam" aria-hidden="true" />
+              <div className="sb-half left">{staticLeft}</div>
+              <div className="sb-half right">{staticRight}</div>
 
               {turn && (
                 <div className={`sb-curl ${turn.dir}`} style={{ ['--n' as string]: N }}>
@@ -486,50 +358,19 @@ export function Sketchbook() {
               )}
             </div>
           </div>
-
-          {/* the magnified copy of the resting spread, seen through the glass */}
-          <div ref={zoomWrapRef} className="sb-zoomwrap" style={{ opacity: 0 }}>
-            {/* width is set from placeLoupe, which runs after layout */}
-            <div ref={zoomInnerRef} className="sb-zoominner">
-              <div className="sb-book bg-paper-lift">
-                <div className="sb-half left">{flat.left}</div>
-                <div className="sb-half right">{flat.right}</div>
-              </div>
-            </div>
-          </div>
-
-          {loupeOn && (
-            <div
-              ref={loupeRef}
-              className="sb-loupe"
-              onPointerDown={onLoupeDown}
-              onPointerMove={onLoupeMove}
-              onPointerUp={onLoupeUp}
-              onPointerCancel={onLoupeUp}
-              role="img"
-              aria-label="Lente d’ingrandimento, trascinabile sulla pagina"
-            >
-              <div className="rim" />
-              <div className="shine" />
-            </div>
-          )}
         </div>
+
+        <SideArrow label="Tavola successiva" onClick={() => step('next')}>
+          <path d="M9 5l7 8-7 8" />
+        </SideArrow>
       </div>
 
-      <Controls
-        idx={idx}
-        turn={turn}
-        zoom={zoom}
-        setZoom={setZoom}
-        step={step}
-        loupeOn={loupeOn}
-        setLoupeOn={setLoupeOn}
-        showGlass
-        showZoom
-      />
+      <p className="mt-5 text-center text-label tracking-wide text-ink-soft tabular-nums">
+        {(turn ? turn.to : idx) + 1} / {M}
+      </p>
 
       <p
-        className={`mt-4 text-center text-label text-ink-soft transition-opacity duration-300 ${
+        className={`mt-2 text-center text-label text-ink-soft transition-opacity duration-300 ${
           hintGone ? 'opacity-0' : 'opacity-100'
         }`}
         aria-hidden={hintGone}
@@ -592,80 +433,8 @@ function Strip({
   )
 }
 
-/** Pager, glass toggle and zoom — shared by the spread and the stacked card. */
-function Controls({
-  idx,
-  turn,
-  zoom,
-  setZoom,
-  step,
-  loupeOn,
-  setLoupeOn,
-  showGlass,
-  showZoom,
-}: {
-  idx: number
-  turn: Turn | null
-  zoom: number
-  setZoom: React.Dispatch<React.SetStateAction<number>>
-  step: (d: Dir) => void
-  loupeOn: boolean
-  setLoupeOn: React.Dispatch<React.SetStateAction<boolean>>
-  showGlass: boolean
-  /** The stacked card has no magnification, so it hides the zoom pair. */
-  showZoom: boolean
-}) {
-  return (
-    <div className="mx-auto mt-6 flex max-w-4xl flex-wrap items-center justify-between gap-4">
-      <div className="flex items-center gap-1">
-        <ToolButton label="Tavola precedente" onClick={() => step('prev')}>
-          <path d="M13 4L7 10l6 6" />
-        </ToolButton>
-        <span className="min-w-[5.5rem] text-center text-label tracking-wide text-ink-soft tabular-nums">
-          {(turn ? turn.to : idx) + 1} / {M}
-        </span>
-        <ToolButton label="Tavola successiva" onClick={() => step('next')}>
-          <path d="M7 4l6 6-6 6" />
-        </ToolButton>
-      </div>
-
-      <div className="flex items-center gap-1">
-        {showGlass && (
-          <ToolButton
-            label={loupeOn ? 'Nascondi la lente' : 'Mostra la lente'}
-            onClick={() => setLoupeOn((v) => !v)}
-            pressed={loupeOn}
-          >
-            <circle cx="9" cy="9" r="5.2" />
-            <path d="M12.8 12.8L17 17" />
-          </ToolButton>
-        )}
-        {showZoom && (
-          <>
-            <ToolButton
-              label="Riduci"
-              onClick={() => setZoom((z) => Math.max(ZOOM_MIN, +(z - 0.1).toFixed(2)))}
-            >
-              <path d="M5 10h10" />
-            </ToolButton>
-            <span className="min-w-[3.5rem] text-center text-label text-ink-soft tabular-nums">
-              {Math.round(zoom * 100)}%
-            </span>
-            <ToolButton
-              label="Ingrandisci"
-              onClick={() => setZoom((z) => Math.min(ZOOM_MAX, +(z + 0.1).toFixed(2)))}
-            >
-              <path d="M10 5v10M5 10h10" />
-            </ToolButton>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
-
 /** The editorial index; jumping is the keyboard-and-screen-reader route through
- *  the book, so it carries the same nine plates in the same order. */
+ *  the book, so it carries the same plates in the same order. */
 function PlateList({
   plates: list,
   activeIdx,
@@ -704,6 +473,58 @@ function PlateList({
           )
         })}
       </ol>
+    </div>
+  )
+}
+
+/** A page arrow standing beside the book, where a hand would reach for it. */
+function SideArrow({
+  label,
+  onClick,
+  children,
+}: {
+  label: string
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="flex h-12 w-8 shrink-0 items-center justify-center rounded-sm text-ink-soft transition-colors duration-200 hover:text-brick sm:h-16 sm:w-10"
+    >
+      <svg
+        viewBox="0 0 24 26"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-6 w-6"
+        aria-hidden="true"
+      >
+        {children}
+      </svg>
+    </button>
+  )
+}
+
+/** Just the counter now — the arrows live beside the pages, and the stacked
+ *  card keeps this pair under the plate where there is no room at the sides. */
+function Pager({ idx, turn, step }: { idx: number; turn: Turn | null; step: (d: Dir) => void }) {
+  return (
+    <div className="mt-6 flex items-center justify-center gap-1">
+      <ToolButton label="Tavola precedente" onClick={() => step('prev')}>
+        <path d="M13 4L7 10l6 6" />
+      </ToolButton>
+      <span className="min-w-[5.5rem] text-center text-label tracking-wide text-ink-soft tabular-nums">
+        {(turn ? turn.to : idx) + 1} / {M}
+      </span>
+      <ToolButton label="Tavola successiva" onClick={() => step('next')}>
+        <path d="M7 4l6 6-6 6" />
+      </ToolButton>
     </div>
   )
 }

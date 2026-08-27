@@ -83,10 +83,16 @@ invented process detail, no clip art.
 
 Two presentations, chosen by `useMediaQuery('(min-width: 768px)')`:
 
-- **≥768px** — the dragged spread with the curling leaf, the loupe and zoom.
+- **≥768px** — the dragged spread with the curling leaf, arrows beside the
+  pages, and a counter beneath.
 - **<768px** — `PlateCard`, the plate stacked in one column with a quiet
-  crossfade. A two-page spread cannot hold this much type at phone width, and
-  the loupe is a pointer affordance, so both are dropped rather than shrunk.
+  crossfade. A two-page spread cannot hold this much type at phone width.
+
+**The paper texture lives here and nowhere else.** `.sb-paper` / `.sb-face`
+carry the fibre; it is colour-neutral by construction (sRGB filter
+interpolation, alpha forced opaque, noise centred on mid-grey for `soft-light`),
+so the sheet stays exactly `--color-paper-lift`. Re-measure if you retune it.
+`.sb-fold` shades the gutter and `.sb-seam` runs the stitching down it.
 
 The turning leaf is a chain of **nested** strips (`components/sketchbook` +
 the `@layer components` block in `index.css`). Each strip is a child of the one
@@ -137,9 +143,16 @@ one intended large use.
 Typography:
 
 - **Amiri** (`--font-wordmark`) for the wordmark and the founder's name only.
-  "Hilos" and "Papel" are **bold upright (700)**; the "y" and "Chiara
-  Castracane" are **italic (400)**. Both live in `components/Wordmark.tsx`
-  (`Wordmark` and `FounderName`) — set them there, not ad hoc.
+  It is **italic throughout**: "Hilos" and "Papel" bold (700), the "y" and
+  "Chiara Castracane" regular (400). Set it in `components/Wordmark.tsx`, never
+  ad hoc.
+  `BrandLockup` stacks the wordmark over the founder's name, plus the line of
+  business when `tagline` is set — the header omits it, the footer shows it.
+  Every line is sized so they render to **the same width**; those ratios are
+  tuned to these exact strings, so **re-measure in the browser if the wording or
+  a typeface changes**. Scale the block with `font-size`; the lines are in `em`.
+- **Caveat** (`--font-hand`) for the hero line that writes itself on, and
+  nothing else.
 - **Fraunces** (`--font-display`) for headlines.
 - **Nunito** (`--font-sans`) for UI, nav, labels and body.
 

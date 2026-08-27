@@ -124,6 +124,35 @@
     transform-style: preserve-3d;
   }
 
+  /* The paper the plates are drawn on. Colour-neutral by construction — sRGB
+     filter interpolation, alpha forced opaque, noise centred on mid-grey so
+     `soft-light` leaves the sheet at exactly its own colour. This texture is
+     the sketchbook's alone; no other surface on the site carries it. */
+  .sb-paper {
+    background-color: var(--color-paper-lift);
+    isolation: isolate;
+  }
+  .sb-paper::before,
+  .sb-face::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='c' x='0' y='0' width='300' height='300' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='5' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.6' intercept='-0.27'/%3E%3CfeFuncG type='linear' slope='1.6' intercept='-0.27'/%3E%3CfeFuncB type='linear' slope='1.6' intercept='-0.27'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23c)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s' x='0' y='0' width='160' height='160' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.5' intercept='-0.22'/%3E%3CfeFuncG type='linear' slope='1.5' intercept='-0.22'/%3E%3CfeFuncB type='linear' slope='1.5' intercept='-0.22'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)'/%3E%3C/svg%3E");
+    background-size:
+      300px 300px,
+      160px 160px;
+    mix-blend-mode: soft-light;
+    opacity: 0.8;
+  }
+  /* the leaf in flight carries the same sheet */
+  .sb-face {
+    isolation: isolate;
+  }
+
   /* the two halves lying flat on the desk */
   .sb-half {
     position: absolute;
@@ -140,22 +169,46 @@
     left: 50%;
   }
 
-  /* the shadow the lifting leaf throws into the gutter */
-  .sb-gutter {
+  /* The sewing down the fold: a running stitch through pierced stations, the
+     way the signatures are actually held. Deliberately quiet — it is a detail
+     of the binding, not a rule dividing the spread. */
+  .sb-seam {
+    position: absolute;
+    top: 12%;
+    bottom: 12%;
+    left: 50%;
+    z-index: 4;
+    width: 1.5px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      180deg,
+      var(--color-thread-maroon) 0 11px,
+      transparent 11px 24px
+    );
+    opacity: 0.5;
+  }
+
+  /* The fold itself: paper curving down into the gutter from both sides. Two
+     narrow gradients rather than one wide band, so the darkening reaches its
+     maximum exactly at the fold. */
+  .sb-fold {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 42%;
+    left: 50%;
+    z-index: 3;
+    width: 70px;
+    transform: translateX(-50%);
     pointer-events: none;
-    opacity: calc(var(--shade, 0) * 0.55);
-  }
-  .sb-gutter.left {
-    right: 0;
-    background: linear-gradient(270deg, rgba(46, 26, 24, 0.28), rgba(46, 26, 24, 0) 80%);
-  }
-  .sb-gutter.right {
-    left: 0;
-    background: linear-gradient(90deg, rgba(46, 26, 24, 0.22), rgba(46, 26, 24, 0) 80%);
+    background: linear-gradient(
+      90deg,
+      rgba(46, 26, 24, 0) 0%,
+      rgba(46, 26, 24, 0.13) 46%,
+      rgba(46, 26, 24, 0.17) 50%,
+      rgba(46, 26, 24, 0.13) 54%,
+      rgba(46, 26, 24, 0) 100%
+    );
   }
 
   /* ---- the turning leaf ---- */
@@ -214,7 +267,10 @@
     right: -1.1px;
     overflow: hidden;
     backface-visibility: hidden;
-    background: var(--color-paper);
+    /* Must match .sb-paper: the leaf is the same sheet as the pages it lies
+       between, so a mismatch here shows as the page changing colour the moment
+       the leaf lands on it. */
+    background: var(--color-paper-lift);
   }
   .sb-face.back {
     transform: rotateY(180deg);
@@ -262,90 +318,54 @@
     opacity: calc(var(--shade, 0) * var(--lit, 1) * var(--lit, 1) * 0.16);
   }
 
-  /* the pool of shadow the closed book rests in */
+  /* The book resting on a surface: a wide ambient pool, a tighter contact
+     shadow under the boards, and a dark hairline right at the edge. All three
+     ease off while a leaf is in the air, since the page is then lifted. */
   .sb-cast {
     position: absolute;
     pointer-events: none;
     z-index: 0;
   }
   .sb-cast.ambient {
-    left: 4%;
-    right: 4%;
-    top: 10%;
-    bottom: -4%;
+    left: -3%;
+    right: -3%;
+    top: 6%;
+    bottom: -7%;
     background: radial-gradient(
-      50% 50% at 50% 58%,
-      rgba(46, 26, 24, 0.3) 0%,
-      rgba(46, 26, 24, 0.16) 42%,
-      rgba(46, 26, 24, 0) 74%
+      52% 52% at 50% 62%,
+      rgba(46, 26, 24, 0.42) 0%,
+      rgba(46, 26, 24, 0.2) 46%,
+      rgba(46, 26, 24, 0) 76%
     );
-    filter: blur(26px);
+    filter: blur(30px);
     opacity: calc(1 - var(--shade, 0) * 0.4);
   }
   .sb-cast.contact {
-    left: 10%;
-    right: 10%;
-    top: 78%;
-    bottom: -6%;
+    left: 4%;
+    right: 4%;
+    top: 62%;
+    bottom: -5%;
     background: radial-gradient(
-      50% 46% at 50% 40%,
-      rgba(46, 26, 24, 0.36) 0%,
-      rgba(46, 26, 24, 0) 78%
+      50% 48% at 50% 62%,
+      rgba(46, 26, 24, 0.5) 0%,
+      rgba(46, 26, 24, 0.18) 52%,
+      rgba(46, 26, 24, 0) 80%
     );
-    filter: blur(10px);
+    filter: blur(14px);
     opacity: calc(1 - var(--shade, 0) * 0.5);
   }
-
-  /* ---- the glass ---- */
-  .sb-loupe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--lr, 200px);
-    height: var(--lr, 200px);
-    border-radius: 50%;
-    z-index: 20;
-    cursor: grab;
-    touch-action: none;
-  }
-  .sb-loupe.held {
-    cursor: grabbing;
-  }
-  .sb-loupe .rim {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    box-shadow:
-      inset 0 0 0 2px rgba(46, 26, 24, 0.5),
-      inset 0 0 0 7px var(--color-paper-lift),
-      inset 0 0 0 9px rgba(46, 26, 24, 0.28),
-      0 10px 24px -10px rgba(46, 26, 24, 0.6);
-  }
-  /* a slip of light across the glass so it reads as glass, not a hole */
-  .sb-loupe .shine {
-    position: absolute;
-    inset: 9px;
-    border-radius: 50%;
-    pointer-events: none;
-    background: linear-gradient(
-      140deg,
-      rgba(255, 255, 255, 0.34) 0%,
-      rgba(255, 255, 255, 0.06) 34%,
-      rgba(255, 255, 255, 0) 52%
+  .sb-cast.edge {
+    left: 9%;
+    right: 9%;
+    top: 92%;
+    bottom: -2%;
+    background: radial-gradient(
+      50% 50% at 50% 34%,
+      rgba(46, 26, 24, 0.5) 0%,
+      rgba(46, 26, 24, 0) 74%
     );
-  }
-  .sb-zoomwrap {
-    position: absolute;
-    inset: 0;
-    z-index: 19;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .sb-zoominner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform-origin: 0 0;
+    filter: blur(6px);
+    opacity: calc(1 - var(--shade, 0) * 0.6);
   }
 }
 

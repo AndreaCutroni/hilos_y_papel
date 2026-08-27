@@ -7,6 +7,7 @@ import { FacebookIcon, InstagramIcon, MailIcon } from './SocialLinks'
 export const socials = [
   {
     key: 'mail',
+    name: 'Mail',
     label: 'Scrivi a ' + contact.email,
     short: contact.email,
     href: `mailto:${contact.email}`,
@@ -15,6 +16,7 @@ export const socials = [
   },
   {
     key: 'instagram',
+    name: 'Instagram',
     label: 'Instagram: ' + contact.instagram.handle,
     short: contact.instagram.handle,
     href: contact.instagram.url,
@@ -23,6 +25,7 @@ export const socials = [
   },
   {
     key: 'facebook',
+    name: 'Facebook',
     label: 'Facebook: ' + contact.facebook.handle,
     short: contact.facebook.handle,
     href: contact.facebook.url,

@@ -97,28 +97,6 @@ export const plates: Plate[] = [
     ],
     index: 'Le carte',
   },
-  {
-    id: 'copertina',
-    mark: 'VIII',
-    title: 'Fantasia o su misura',
-    lede: 'Due modi di arrivare alla copertina.',
-    body: [
-      'La copertina Fantasia nasce da carte e stoffe lavorate con motivi di diverso genere. Quella Personalizzata nasce da te: una foto, un tema, anche solo un colore.',
-      'Reinterpreto l’immagine e realizzo l’illustrazione che verrà stampata sul fronte.',
-    ],
-    index: 'La copertina',
-  },
-  {
-    id: 'tesi',
-    mark: 'IX',
-    title: 'Rilegare una tesi',
-    lede: 'Lo stesso gesto, su misura più grande.',
-    body: [
-      'La tesi si rilega a mano con la stessa cucitura a blocchi: per questo il file va impaginato al doppio del formato, così i fogli si possono piegare e cucire.',
-      'Per qualsiasi dubbio o informazione, scrivimi.',
-    ],
-    index: 'La tesi',
-  },
 ]
 
 export const sketchbookIntro = {
@@ -130,4 +108,4 @@ export const sketchbookIntro = {
     'Chiara Castracane sorride tenendo in mano un quaderno rilegato a mano con copertina chiara.',
 } as const
 
-export const sketchbookHint = 'Trascina la pagina per voltarla · trascina la lente per ingrandire'
+export const sketchbookHint = 'Trascina la pagina per voltarla, o usa le frecce'

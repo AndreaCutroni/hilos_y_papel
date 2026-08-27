@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { navigation } from '@/content/brand'
-import { FounderName, Wordmark } from '@/components/Wordmark'
-import { SocialIcons } from '@/components/SocialLinks'
+import { BrandLockup } from '@/components/Wordmark'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { transition } from '@/lib/motion'
 import marchio from '@/assets/images/marchio-mano.webp'
@@ -31,24 +30,18 @@ export function Header() {
             aria-hidden="true"
             className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-paper/35 md:h-13 md:w-13"
           />
-          <span className="flex flex-col leading-none">
-            <Wordmark className="text-h4 leading-none md:text-h3" />
-            <FounderName className="mt-1 text-label leading-none text-paper/85 md:text-body" />
-          </span>
+          <BrandLockup className="text-[1.45rem] md:text-[1.75rem]" />
         </Link>
 
-        <div className="hidden items-center gap-6 md:flex">
-          <nav aria-label="Principale">
-            <ul className="flex items-center gap-7">
-              {navigation.map((item) => (
-                <li key={item.to}>
-                  <NavItem to={item.to} label={item.label} />
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <SocialIcons className="-mr-2" />
-        </div>
+        <nav aria-label="Principale" className="hidden md:block">
+          <ul className="flex items-center gap-7">
+            {navigation.map((item) => (
+              <li key={item.to}>
+                <NavItem to={item.to} label={item.label} />
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         <button
           type="button"
@@ -91,7 +84,6 @@ export function Header() {
                   </li>
                 ))}
               </ul>
-              <SocialIcons className="-ml-2 border-t border-paper/15 pt-3" />
             </nav>
           </motion.div>
         )}
