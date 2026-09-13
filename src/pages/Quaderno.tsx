@@ -11,7 +11,6 @@ import {
   type Taglia,
 } from '@/content/quaderni'
 import { generi, tipologie } from '@/content/products'
-import { fotoDi } from '@/lib/quaderniFoto'
 import { rise, riseStagger, transition } from '@/lib/motion'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 
@@ -41,7 +40,7 @@ export function Quaderno() {
         </Link>
 
         <div className="mt-8 grid gap-10 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:gap-14">
-          {/* Keyed so the gallery starts again from the cover on every notebook. */}
+          {/* Keyed so the gallery starts again from the first photo on every notebook. */}
           <Galleria key={q.slug} q={q} />
           <Dati q={q} />
         </div>
@@ -50,7 +49,7 @@ export function Quaderno() {
           aria-label="Altri quaderni"
           className="mt-16 flex items-start justify-between gap-6 border-t border-ink/15 pt-6"
         >
-          <Link to={`/quaderni/${precedente.slug}`} className="group">
+          <Link to={`/quaderni/${encodeURIComponent(precedente.slug)}`} className="group">
             <span className="block text-label text-ink-soft">
               <span aria-hidden="true">← </span>Precedente
             </span>
@@ -58,7 +57,10 @@ export function Quaderno() {
               {precedente.nome}
             </span>
           </Link>
-          <Link to={`/quaderni/${successivo.slug}`} className="group text-right">
+          <Link
+            to={`/quaderni/${encodeURIComponent(successivo.slug)}`}
+            className="group text-right"
+          >
             <span className="block text-label text-ink-soft">
               Successivo<span aria-hidden="true"> →</span>
             </span>
@@ -72,11 +74,12 @@ export function Quaderno() {
   )
 }
 
-/** The photos at their own proportions — contained, never cropped — with the
-    arrows beside them as on the sketchbook, thumbnails below, and a swipe on
-    touch. */
+/** The photos from the notebook's images/ folder at their own proportions —
+    contained, never cropped — with the arrows beside them as on the
+    sketchbook, thumbnails below, and a swipe on touch. Keys are positions, not
+    URLs: two files with the same content can share one URL in a build. */
 function Galleria({ q }: { q: Voce }) {
-  const foto = fotoDi(q)
+  const foto = q.foto
   const [indice, setIndice] = useState(0)
   const reduced = useReducedMotion()
   const piuFoto = foto.length > 1
@@ -100,10 +103,8 @@ function Galleria({ q }: { q: Voce }) {
         <div className="relative aspect-square min-w-0 flex-1 overflow-hidden rounded-[3px] bg-paper-lift">
           <AnimatePresence initial={false}>
             <motion.img
-              key={f.nome}
-              src={f.grande}
-              srcSet={f.srcSet}
-              sizes="(min-width: 768px) 45vw, 88vw"
+              key={indice}
+              src={f}
               alt={`${q.nome}, foto ${indice + 1} di ${foto.length}`}
               draggable={false}
               className="absolute inset-0 h-full w-full object-contain"
@@ -136,7 +137,7 @@ function Galleria({ q }: { q: Voce }) {
           className="mt-4 grid grid-cols-5 gap-2 px-9 sm:grid-cols-7 sm:px-12"
         >
           {foto.map((t, n) => (
-            <li key={t.nome}>
+            <li key={n}>
               <button
                 type="button"
                 onClick={() => setIndice(n)}
@@ -147,7 +148,7 @@ function Galleria({ q }: { q: Voce }) {
                 }`}
               >
                 <img
-                  src={t.piccola}
+                  src={t}
                   alt=""
                   loading="lazy"
                   decoding="async"
@@ -179,6 +180,12 @@ function Dati({ q }: { q: Voce }) {
       <motion.h1 variants={rise} className="text-h2 text-ink md:text-h1">
         {q.nome}
       </motion.h1>
+      {/* The owner's own words from quaderno.json, when there are any. */}
+      {q.descrizione && (
+        <motion.p variants={rise} className="mt-5 text-body-lg text-ink-soft text-pretty">
+          {q.descrizione}
+        </motion.p>
+      )}
 
       <motion.dl variants={rise} className="mt-8 border-t border-ink/15">
         <Riga termine="Copertina">

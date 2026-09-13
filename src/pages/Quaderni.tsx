@@ -1,10 +1,16 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
-import { formatoDi, quaderni, type Quaderno } from '@/content/quaderni'
+import {
+  formatoDi,
+  immaginiDaControllare,
+  PESO_MASSIMO,
+  problemiQuaderni,
+  quaderni,
+  type Quaderno,
+} from '@/content/quaderni'
 import { tipologie } from '@/content/products'
-import { fotoDi } from '@/lib/quaderniFoto'
 import { rise, riseStagger, transition } from '@/lib/motion'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 
@@ -99,6 +105,8 @@ export function Quaderni() {
           </p>
         </div>
 
+        {import.meta.env.DEV && <DaSistemare />}
+
         <ul className="relative mt-10 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 md:gap-x-8 md:gap-y-14">
           <AnimatePresence mode="popLayout">
             {visibili.map((q, i) => (
@@ -144,36 +152,21 @@ export function Quaderni() {
 }
 
 function VoceCatalogo({ q }: { q: Quaderno }) {
-  const [copertina, seconda] = fotoDi(q)
-  // The cover's real width, so a retina screen still settles for the 800px file:
-  // a third of the column less its padding and gaps. From 1440px the column grows
-  // with the fluid root (see index.css); the px values are those of a 16px root.
-  const sizes =
-    '(min-width: 1440px) calc(11.43vw + 177px), (min-width: 1152px) 341px, (min-width: 768px) calc((100vw - 128px) / 3), calc((100vw - 68px) / 2)'
-
   return (
-    <Link to={`/quaderni/${q.slug}`} className="group block rounded-[3px]">
+    <Link to={`/quaderni/${encodeURIComponent(q.slug)}`} className="group block rounded-[3px]">
       <div className="relative aspect-square overflow-hidden rounded-[3px] bg-paper-lift">
-        {copertina && (
+        <img
+          src={q.cover1}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        {/* cover2 fades in on hover. It is only rendered where a real hover
+            exists: on touch it would be downloaded and never seen. */}
+        {q.cover2 && (
           <img
-            src={copertina.piccola}
-            srcSet={copertina.srcSet}
-            sizes={sizes}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: q.taglio }}
-          />
-        )}
-        {/* The second photo — usually the sewn spine — fades in on hover. It is
-            only rendered where a real hover exists: on touch it would be
-            downloaded and never seen. */}
-        {seconda && (
-          <img
-            src={seconda.piccola}
-            srcSet={seconda.srcSet}
-            sizes={sizes}
+            src={q.cover2}
             alt=""
             loading="lazy"
             decoding="async"
@@ -194,6 +187,66 @@ function VoceCatalogo({ q }: { q: Quaderno }) {
       )}
     </Link>
   )
+}
+
+/** Dev only: what keeps a notebook folder off the site or looks odd in it, and
+    any photo too heavy to serve as it is. The owner sees it while previewing
+    locally; the live site never ships it. */
+function DaSistemare() {
+  const pesanti = useFotoPesanti()
+  if (!problemiQuaderni.length && !pesanti.length) return null
+
+  return (
+    <div role="note" className="mt-8 rounded-sm border border-brick/40 bg-paper-lift px-5 py-4">
+      <p className="text-label font-bold tracking-wide text-accent uppercase">
+        Da sistemare — visibile solo in locale
+      </p>
+      <ul className="mt-2 space-y-1 text-body text-ink">
+        {problemiQuaderni.map((p) => (
+          <li key={p.slug}>
+            <span className="font-bold">{p.slug}</span>: {p.messaggi.join(' · ')}
+          </li>
+        ))}
+        {pesanti.map((f) => (
+          <li key={f.file}>
+            <span className="font-bold">{f.file}</span> pesa {f.mb} MB: salvala più piccola (circa
+            1600 px sul lato lungo, 1000 per le cover)
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+/** Asks the dev server how big each photo in the notebook folders is. Nothing
+    resizes them, so a camera original dropped in as it is would slow every
+    page it appears on. */
+function useFotoPesanti() {
+  const [pesanti, setPesanti] = useState<{ file: string; mb: string }[]>([])
+  useEffect(() => {
+    let attivo = true
+    Promise.all(
+      immaginiDaControllare().map(({ file, url }) =>
+        fetch(url, { method: 'HEAD' }).then((r) => ({
+          file,
+          byte: Number(r.headers.get('content-length')) || 0,
+        }))
+      )
+    )
+      .then((tutte) => {
+        if (!attivo) return
+        setPesanti(
+          tutte
+            .filter((f) => f.byte > PESO_MASSIMO)
+            .map((f) => ({ file: f.file, mb: (f.byte / 1e6).toFixed(1).replace('.', ',') }))
+        )
+      })
+      .catch(() => {})
+    return () => {
+      attivo = false
+    }
+  }, [])
+  return pesanti
 }
 
 function Gruppo({ nome, children }: { nome: string; children: ReactNode }) {

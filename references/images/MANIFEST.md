@@ -3,9 +3,12 @@
 Foto originali rinominate e raggruppate per quaderno.
 La colonna di sinistra è il nome uscito dalla fotocamera.
 
-Ogni cartella in `quaderni/` è un quaderno del sito (`src/content/quaderni.ts`).
-Dopo aver aggiunto, rinominato o tolto foto in quelle cartelle, lancia
-`python scripts/quaderni-webp.py` per aggiornare le versioni WebP del sito.
+Le cartelle in `quaderni/` sono l’archivio delle foto originali dei quaderni.
+Il sito non le legge: i quaderni del sito sono in `src/assets/quaderni/`, una
+cartella per quaderno (vedi il `LEGGIMI.md` lì). Per mandare foto nuove al sito,
+mettile nella cartella del quaderno come `cover1`, `cover2` o dentro `images/`
+e lancia `python scripts/converti-foto.py`: le converte in webp nella cartella
+corrispondente in `src`.
 
 | originale | percorso attuale |
 | --- | --- |

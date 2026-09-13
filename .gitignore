@@ -17,9 +17,9 @@ dist-ssr
 .env.*
 !.env.example
 
-# Reference photography — ~274MB of camera originals, kept locally as the source
-# for the graded webp files under src/assets/images. Committing them would bloat
-# the history permanently and could never be undone cleanly. The manifest that
+# Reference photography — ~274MB of camera originals, kept locally as the
+# archive the site's photos were made from. Committing them would bloat the
+# history permanently and could never be undone cleanly. The manifest that
 # records how they are organised IS tracked.
 references/images/*
 !references/images/MANIFEST.md
@@ -36,3 +36,6 @@ desktop.ini
 *.njsproj
 *.sln
 *.sw?
+
+# Python bytecode from scripts/
+__pycache__/
