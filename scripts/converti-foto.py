@@ -18,6 +18,7 @@ changed, and nothing in src is ever deleted.
     python scripts/converti-foto.py onde-rosse  just that one
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -40,6 +41,15 @@ def apri(src: Path) -> Image.Image:
         return im.convert('RGBA' if trasparente else 'RGB')
 
 
+def salva(im: Image.Image, out: Path) -> None:
+    """Write beside the old file, then swap it in. On Windows a WebP the dev
+    server or a browser is holding cannot be overwritten in place, but it can
+    be replaced."""
+    tmp = out.with_name(f'{out.stem}.nuova{out.suffix}')
+    im.save(tmp, 'WEBP', quality=QUALITA, method=6)
+    os.replace(tmp, out)
+
+
 def cover(src: Path, out: Path) -> Image.Image:
     im = apri(src)
     lato = min(im.size)
@@ -47,14 +57,14 @@ def cover(src: Path, out: Path) -> Image.Image:
     im = im.crop((x, y, x + lato, y + lato))
     if lato > LATO_COVER:
         im = im.resize((LATO_COVER, LATO_COVER), Image.Resampling.LANCZOS)
-    im.save(out, 'WEBP', quality=QUALITA, method=6)
+    salva(im, out)
     return im
 
 
 def foto(src: Path, out: Path) -> Image.Image:
     im = apri(src)
     im.thumbnail((LATO_FOTO, LATO_FOTO), Image.Resampling.LANCZOS)
-    im.save(out, 'WEBP', quality=QUALITA, method=6)
+    salva(im, out)
     return im
 
 
