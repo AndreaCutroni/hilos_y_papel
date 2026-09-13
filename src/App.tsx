@@ -5,7 +5,9 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { PageTransition } from '@/components/layout/PageTransition'
 import { Home } from '@/pages/Home'
-import { Quaderni, Tipologie, Carte, ComponiIlTuo } from '@/pages/stubs'
+import { Quaderni } from '@/pages/Quaderni'
+import { Quaderno } from '@/pages/Quaderno'
+import { Tipologie, Carte, ComponiIlTuo } from '@/pages/stubs'
 import { ChiSono } from '@/pages/ChiSono'
 
 export default function App() {
@@ -29,6 +31,7 @@ export default function App() {
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/quaderni" element={<Quaderni />} />
+              <Route path="/quaderni/:slug" element={<Quaderno />} />
               <Route path="/tipologie" element={<Tipologie />} />
               <Route path="/carte" element={<Carte />} />
               <Route path="/componi-il-tuo" element={<ComponiIlTuo />} />

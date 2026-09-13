@@ -1,14 +1,5 @@
 import { Placeholder } from './Placeholder'
 
-export function Quaderni() {
-  return (
-    <Placeholder
-      title="Quaderni"
-      intro="Il catalogo dei quaderni realizzati, con formati, tipologie e prezzi. Qui arriveranno gli esempi già cuciti."
-    />
-  )
-}
-
 export function Tipologie() {
   return (
     <Placeholder
