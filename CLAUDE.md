@@ -139,21 +139,50 @@ Two presentations, chosen by `useMediaQuery('(min-width: 768px)')`:
 carry the fibre; it is colour-neutral by construction (sRGB filter
 interpolation, alpha forced opaque, noise centred on mid-grey for `soft-light`),
 so the sheet stays exactly `--color-paper-lift`. Re-measure if you retune it.
-`.sb-fold` shades the gutter and `.sb-seam` runs the stitching down it.
+The binding: **each page carries its own fall into the fold** — lit crest,
+slope and crease (`.sb-page-fold`, added by `SketchPage`) — so the shading turns
+with the paper. Never lay it over the spine: the leaf covers it the moment a
+turn starts and uncovers it as the leaf lands, which reads as the binding
+blinking. The Coptic thread (`.sb-sewing`, stations in `STATIONS`) does stay at
+the spine, lifted 1.5px in z so the leaf's root never hides it. `.sb-block`
+shows the stacked page edges along the foot. The corners are rounded by
+`--sb-r`, and the turning leaf's free edge is rounded to match.
 
 The turning leaf is a chain of **nested** strips (`components/sketchbook` +
 the `@layer components` block in `index.css`). Each strip is a child of the one
-before it so rotations compound, which is what traces the curve. Two details are
-easy to get wrong and both show up as hard vertical seams:
+before it so rotations compound, which is what traces the curve. Its shape and
+light live in `leaf.ts`, apart from React:
 
-- The sheen (`.gl`) must be a **flat tint per strip**, never a gradient — a
-  gradient restarts at every strip boundary and bands the whole leaf.
-- The trough shading (`.sh`) runs `--a1 → --a2` on front faces and
-  `--a2 → --a1` on back faces, because a back face is mirrored.
+- **The free edge leads**, with most of the bend near the spine, like a page
+  pulled by its edge; the bend peaks with the leaf upright. A drag inverts that
+  shape so the edge follows the hand, and a release hands the hand's speed to
+  the spring, so nothing stops and restarts.
+- **Light is a gradient per face between the values at the strip's two edges**,
+  which neighbours share, so the leaf shades as one sheet. Never a flat tint per
+  strip (it bands) and never the same gradient in every strip (it saws). A back
+  face is mirrored, so its stops run the other way.
+- **Every per-frame value is written onto the element that uses it**: each
+  strip's rotation, each face's light, the shadows' fade and slide. Never an
+  inherited custom property — that restyles every copy of the page inside the
+  leaf on every frame, which is what made the turn stutter (in a headless trace,
+  one turn went from 130 ms of style recalc and 1.2 s of raster to 19 ms and
+  0.24 s).
+- The shadow the leaf throws past its free edge (`.sb-band`) and the dimming
+  at the spine (`.sb-occl`) are painted once, then only faded and slid.
+- Faces overlap by 1.1px on their **right** side in both directions. Measured:
+  on the left, a backward turn shows a light line at every hinge.
+- `EYE` in `leaf.ts` must match the perspective on `.sb-3d` (1.95 book widths,
+  3.9 pages), or the shadow band drifts off the leaf's edge.
+- **Nothing on `.sb-book` may flatten 3D** — no `isolation`, `overflow`,
+  `opacity`, `filter`, `clip-path` or blend mode. Any one of them silently makes
+  the book flat: the leaf loses its perspective and is painted over the binding
+  by z-index instead of sorted by depth, so the thread vanishes mid-turn. The
+  paper and its texture sit on `.sb-sheet`, a child, for exactly this reason.
 
-The arc is driven per frame by writing `--tt`, `--td` and `--shade` straight to
-the DOM from `Sketchbook.tsx`; React does not re-render while a page is in
-flight. Under `prefers-reduced-motion` the leaf snaps rather than springs.
+A turn from the arrows is a 0.64s eased glide; a released drag settles on a
+critically damped spring. It is the one motion on the site allowed past 400ms,
+because it follows the hand. Under `prefers-reduced-motion` there is no leaf at
+all: the plate simply changes.
 
 ## Design tokens
 
@@ -217,10 +246,11 @@ Spacing follows an 8px rhythm.
 
 ## Conventions
 
-- **Motion**: 200–400ms, ease-out, 8–16px translate distances — no exceptions.
-  The hero once opened with an 850ms page-turn reveal; it was removed at the
-  owner's request, so nothing on the site runs long any more. Do not reintroduce
-  a load animation over the hero photograph.
+- **Motion**: 200–400ms, ease-out, 8–16px translate distances. The one
+  exception is the sketchbook's page turn on `/chi-sono`, which follows the
+  hand. The hero once opened with an 850ms page-turn reveal; it was removed at
+  the owner's request. Do not reintroduce a load animation over the hero
+  photograph.
 - **Sizing scales with wide screens — except the chrome.** The root
   `font-size` in `index.css` grows from 16px at 1440px to a 24px cap, so
   everything built in `rem` scales together above that width instead of sitting

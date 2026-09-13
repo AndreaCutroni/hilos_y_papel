@@ -152,14 +152,12 @@
 --------------------------------------------------------------------------- */
 @layer components {
   .sb-3d {
-    perspective: 1750px;
-    perspective-origin: 50% 46%;
-  }
-
-  .sb-tilt {
-    transform-style: preserve-3d;
-    transform: scale(var(--zoom, 1));
-    will-change: transform;
+    /* The eye's distance grows with the book, so the curl reads the same at
+       every width: 1.95 book widths, which leaf.ts calls EYE (3.9 pages). */
+    perspective: calc(var(--bw, 900px) * 1.95);
+    perspective-origin: 50% 44%;
+    /* the leaves' rounded corners */
+    --sb-r: calc(var(--bw, 900px) * 0.011);
   }
 
   .sb-book {
@@ -167,6 +165,18 @@
     width: 100%;
     aspect-ratio: 1600 / 1040;
     transform-style: preserve-3d;
+    border-radius: var(--sb-r);
+  }
+
+  /* The paper itself, on its own layer under the pages. It cannot live on
+     .sb-book: its texture needs `isolation`, and any grouping property on the
+     book (isolation, overflow, opacity, filter, clip-path, a blend mode)
+     flattens the 3D context — the leaf loses its perspective and is painted
+     over the binding instead of being sorted by depth. */
+  .sb-sheet {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--sb-r);
   }
 
   /* The paper the plates are drawn on. Colour-neutral by construction — sRGB
@@ -192,13 +202,15 @@
       160px 160px;
     mix-blend-mode: soft-light;
     opacity: 0.8;
+    /* follows the rounded corners of whatever it textures */
+    border-radius: inherit;
   }
   /* the leaf in flight carries the same sheet */
   .sb-face {
     isolation: isolate;
   }
 
-  /* the two halves lying flat on the desk */
+  /* the two halves lying flat, each rounded at its outer corners */
   .sb-half {
     position: absolute;
     top: 0;
@@ -209,78 +221,178 @@
   }
   .sb-half.left {
     left: 0;
+    border-radius: var(--sb-r) 0 0 var(--sb-r);
   }
   .sb-half.right {
     left: 50%;
+    border-radius: 0 var(--sb-r) var(--sb-r) 0;
   }
 
-  /* The sewing down the fold: a running stitch through pierced stations, the
-     way the signatures are actually held. Deliberately quiet — it is a detail
-     of the binding, not a rule dividing the spread. */
-  .sb-seam {
+  /* What the leaf in the air throws onto the pages under it. Both are painted
+     once and only faded and slid from Sketchbook.tsx, so a turn never repaints
+     the page beneath. */
+  .sb-occl,
+  .sb-band {
     position: absolute;
-    top: 12%;
-    bottom: 12%;
-    left: 50%;
-    z-index: 4;
-    width: 1.5px;
-    transform: translateX(-50%);
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    width: 100%;
     pointer-events: none;
-    background-image: repeating-linear-gradient(
-      180deg,
-      var(--color-thread-maroon) 0 11px,
-      transparent 11px 24px
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  /* the spine side of each page, dimmed while the leaf stands over it */
+  .sb-half.left .sb-occl {
+    right: 0;
+    background: linear-gradient(
+      270deg,
+      rgba(46, 26, 24, 0.3),
+      rgba(46, 26, 24, 0.11) 20%,
+      rgba(46, 26, 24, 0) 52%
     );
-    opacity: 0.5;
+  }
+  .sb-half.right .sb-occl {
+    left: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(46, 26, 24, 0.3),
+      rgba(46, 26, 24, 0.11) 20%,
+      rgba(46, 26, 24, 0) 52%
+    );
+  }
+  /* the soft shadow just past the leaf's free edge, sharper the lower it is */
+  .sb-half.right .sb-band {
+    left: 0;
+    transform-origin: left center;
+    background: linear-gradient(
+      90deg,
+      rgba(46, 26, 24, 0.85),
+      rgba(46, 26, 24, 0.32) 28%,
+      rgba(46, 26, 24, 0)
+    );
+  }
+  .sb-half.left .sb-band {
+    right: 0;
+    transform-origin: right center;
+    background: linear-gradient(
+      270deg,
+      rgba(46, 26, 24, 0.85),
+      rgba(46, 26, 24, 0.32) 28%,
+      rgba(46, 26, 24, 0)
+    );
   }
 
-  /* The fold itself: paper curving down into the gutter from both sides. Two
-     narrow gradients rather than one wide band, so the darkening reaches its
-     maximum exactly at the fold. */
-  .sb-fold {
+  /* ---- the binding ----
+     Each page carries its own fall into the fold (SketchPage adds it), so the
+     shading turns with the paper: a leaf lifting away takes its fold along and
+     the page beneath shows its own. Laid over the spine instead, the leaf
+     covers it the moment it lifts and uncovers it as it lands. Lit crest, the
+     slope, then the crease at the very edge; the left slope faces away from
+     the light, so it shades deeper. */
+  .sb-page-fold {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    width: 18%;
+    pointer-events: none;
+  }
+  .sb-page-fold.left {
+    right: 0;
+    background:
+      linear-gradient(90deg, transparent calc(100% - 1px), rgba(46, 26, 24, 0.18) 0),
+      linear-gradient(
+        90deg,
+        rgba(46, 26, 24, 0) 0%,
+        rgba(255, 250, 240, 0.1) 52%,
+        rgba(255, 250, 240, 0) 72%,
+        rgba(46, 26, 24, 0.07) 86%,
+        rgba(46, 26, 24, 0.24) 99%
+      );
+  }
+  .sb-page-fold.right {
+    left: 0;
+    background:
+      linear-gradient(270deg, transparent calc(100% - 1px), rgba(46, 26, 24, 0.18) 0),
+      linear-gradient(
+        270deg,
+        rgba(46, 26, 24, 0) 0%,
+        rgba(255, 250, 240, 0.13) 52%,
+        rgba(255, 250, 240, 0) 72%,
+        rgba(46, 26, 24, 0.05) 86%,
+        rgba(46, 26, 24, 0.17) 99%
+      );
+  }
+  /* The stitch inside the fold — the same Coptic sewing the photographs show
+     from the outside: lengths of twisted thread between pierced stations. It
+     stays at the spine through a turn, lifted a hair off the page so the
+     leaf's root never covers it. */
+  .sb-sewing {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 50%;
-    z-index: 3;
-    width: 7.8%;
-    transform: translateX(-50%);
+    z-index: 4;
+    width: 0;
+    transform: translateZ(1.5px);
     pointer-events: none;
-    background: linear-gradient(
-      90deg,
-      rgba(46, 26, 24, 0) 0%,
-      rgba(46, 26, 24, 0.13) 46%,
-      rgba(46, 26, 24, 0.17) 50%,
-      rgba(46, 26, 24, 0.13) 54%,
-      rgba(46, 26, 24, 0) 100%
+  }
+  .sb-hole {
+    position: absolute;
+    left: 0;
+    width: calc(var(--bw, 900px) * 0.0052);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle,
+      rgba(46, 26, 24, 0.7) 0 34%,
+      rgba(46, 26, 24, 0.22) 58%,
+      rgba(46, 26, 24, 0) 74%
     );
   }
+  .sb-thread {
+    position: absolute;
+    left: 0;
+    width: max(1.5px, calc(var(--bw, 900px) * 0.0028));
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background:
+      repeating-linear-gradient(-60deg, rgba(255, 240, 235, 0.16) 0 1px, transparent 1px 3px),
+      linear-gradient(90deg, #561623, #93404f 42%, #7a2033 64%, #4a121e);
+    box-shadow: 0.5px 1px 1.5px rgba(46, 26, 24, 0.28);
+  }
 
-  /* ---- the turning leaf ---- */
+  /* ---- the turning leaf ----
+     A chain of strips, each hanging off the end of the one before, so their
+     rotations add up into a curve. Sketchbook.tsx writes each strip's own
+     rotation and each face's light straight onto the element that uses it:
+     nothing here reads a value that changes during a turn, so a frame restyles
+     a few dozen small elements rather than every copy of the page. */
   .sb-curl {
     position: absolute;
     top: 0;
-    height: 100%;
-    width: calc(var(--bw, 0px) * 0.5);
-    transform-style: preserve-3d;
     z-index: 6;
+    width: calc(var(--bw, 0px) * 0.5);
+    height: 100%;
+    transform-style: preserve-3d;
+    pointer-events: none;
   }
   .sb-curl.next {
     left: 50%;
     transform-origin: left center;
-    transform: rotateY(calc(-1 * var(--tt, 0deg)));
   }
   .sb-curl.prev {
     right: 50%;
     transform-origin: right center;
-    transform: rotateY(var(--tt, 0deg));
   }
 
   .sb-strip {
     position: absolute;
     top: 0;
+    width: calc(var(--pw, 0px) / var(--n));
     height: 100%;
-    width: calc(var(--bw, 0px) * 0.5 / var(--n));
     transform-style: preserve-3d;
   }
   .sb-curl.next .sb-strip {
@@ -291,25 +403,19 @@
     right: 0;
     transform-origin: right center;
   }
-  /* every strip after the first hangs off the end of its parent, and its own
-     rotation adds to everything above it — this is the curve */
+  /* every strip after the first hangs off the end of its parent */
   .sb-curl.next .sb-strip .sb-strip {
     left: 100%;
-    transform: rotateY(var(--td, 0deg));
   }
   .sb-curl.prev .sb-strip .sb-strip {
     right: 100%;
     left: auto;
-    transform: rotateY(calc(-1 * var(--td, 0deg)));
   }
 
   .sb-face {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
-    /* a hair of overlap, so no seam shows between strips */
-    right: -1.1px;
     overflow: hidden;
     backface-visibility: hidden;
     /* Must match .sb-paper: the leaf is the same sheet as the pages it lies
@@ -317,59 +423,70 @@
        the leaf lands on it. */
     background: var(--color-paper-lift);
   }
+  /* A hair of overlap on the right of every face, so no seam opens between
+     strips. Measured, not reasoned: moved to the left on a backward turn it
+     leaves a light line at every hinge. */
+  .sb-face {
+    left: 0;
+    right: -1.1px;
+  }
   .sb-face.back {
     transform: rotateY(180deg);
+  }
+  /* the free edge, rounded like the pages and with the paper's own thin edge.
+     A back face is mirrored, so its outer side is its left. */
+  .sb-curl.next .sb-strip.edge > .sb-face.front,
+  .sb-curl.prev .sb-strip.edge > .sb-face.back {
+    border-radius: 0 var(--sb-r) var(--sb-r) 0;
+    box-shadow: inset -1px 0 rgba(46, 26, 24, 0.14);
+  }
+  .sb-curl.next .sb-strip.edge > .sb-face.back,
+  .sb-curl.prev .sb-strip.edge > .sb-face.front {
+    border-radius: var(--sb-r) 0 0 var(--sb-r);
+    box-shadow: inset 1px 0 rgba(46, 26, 24, 0.14);
   }
   /* the page inside the slice: full width, shifted so this strip shows its part */
   .sb-slice {
     position: absolute;
     top: 0;
-    height: 100%;
+    z-index: 1;
     width: var(--pw, 100%);
+    height: 100%;
     container-type: inline-size;
   }
-  /* Shading in the trough of the curve. --a2 of one strip equals --a1 of the
-     next, so the ramps meet exactly and the surface reads as continuous. The
-     back face is mirrored, so its gradient has to run the other way — get this
-     wrong and a hard seam appears down every strip. */
-  .sb-face .sh {
+  /* the light across the curve, written per face each frame */
+  .sb-lit {
     position: absolute;
     inset: 0;
+    z-index: 2;
     pointer-events: none;
-  }
-  .sb-curl.next .sb-face.front .sh,
-  .sb-curl.prev .sb-face.back .sh {
-    background: linear-gradient(
-      90deg,
-      rgba(46, 26, 24, var(--a1, 0)),
-      rgba(46, 26, 24, var(--a2, 0))
-    );
-  }
-  .sb-curl.next .sb-face.back .sh,
-  .sb-curl.prev .sb-face.front .sh {
-    background: linear-gradient(
-      90deg,
-      rgba(46, 26, 24, var(--a2, 0)),
-      rgba(46, 26, 24, var(--a1, 0))
-    );
-  }
-  /* Sheen: a flat tint per strip, never a gradient. A gradient inside each
-     strip would restart at every boundary and band the whole leaf. */
-  .sb-face .gl {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: #fffaf0;
-    opacity: calc(var(--shade, 0) * var(--lit, 1) * var(--lit, 1) * 0.16);
   }
 
-  /* The book resting on a surface: a wide ambient pool, a tighter contact
-     shadow under the boards, and a dark hairline right at the edge. All three
-     ease off while a leaf is in the air, since the page is then lifted. */
+  /* ---- the book on the desk ----
+     The block of pages under the spread shows as thin edges along its foot.
+     Beneath it, a wide ambient pool, a tighter contact shadow and a dark line
+     where the book meets the desk; they ease a little while a leaf is up. */
+  .sb-block {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--sb-r);
+    pointer-events: none;
+    background: #e4d7c4;
+    box-shadow:
+      0 calc(var(--bw, 900px) * 0.0022) 0 #e2d4c0,
+      0 calc(var(--bw, 900px) * 0.0034) 0 rgba(46, 26, 24, 0.12),
+      0 calc(var(--bw, 900px) * 0.0056) 0 #ddccb5,
+      0 calc(var(--bw, 900px) * 0.0068) 0 rgba(46, 26, 24, 0.18);
+  }
+  .sb-desk {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    will-change: opacity;
+  }
   .sb-cast {
     position: absolute;
     pointer-events: none;
-    z-index: 0;
   }
   .sb-cast.ambient {
     left: -3%;
@@ -383,7 +500,6 @@
       rgba(46, 26, 24, 0) 76%
     );
     filter: blur(30px);
-    opacity: calc(1 - var(--shade, 0) * 0.4);
   }
   .sb-cast.contact {
     left: 4%;
@@ -397,7 +513,6 @@
       rgba(46, 26, 24, 0) 80%
     );
     filter: blur(14px);
-    opacity: calc(1 - var(--shade, 0) * 0.5);
   }
   .sb-cast.edge {
     left: 9%;
@@ -410,7 +525,6 @@
       rgba(46, 26, 24, 0) 74%
     );
     filter: blur(6px);
-    opacity: calc(1 - var(--shade, 0) * 0.6);
   }
 }
 

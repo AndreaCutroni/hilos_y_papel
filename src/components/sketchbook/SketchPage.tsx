@@ -34,13 +34,17 @@ type Side = 'left' | 'right'
  * Rendered flat when the book is at rest, and again inside each strip of the
  * turning leaf, so it must lay out purely from its own box with no dependence
  * on where it sits.
+ *
+ * Each page also carries its own fall into the fold on its spine side
+ * (`.sb-page-fold`). Part of the paper, not an overlay on the spine: a leaf
+ * lifting away takes its fold with it, and the page beneath shows its own.
  */
 export function SketchPage({ plate, side }: { plate: Plate; side: Side }) {
   const Sketch = sketches[plate.id]
 
   if (side === 'left') {
     return (
-      <div className="flex h-full w-full flex-col justify-between px-[7%] py-[8%]">
+      <div className="relative flex h-full w-full flex-col justify-between px-[7%] py-[8%]">
         <span className="font-display text-[clamp(0.7rem,1.5cqw,0.95rem)] tracking-[0.3em] text-ink-soft">
           {plate.mark}
         </span>
@@ -52,12 +56,13 @@ export function SketchPage({ plate, side }: { plate: Plate; side: Side }) {
         <span className="text-[clamp(0.6rem,1.2cqw,0.75rem)] tracking-[0.18em] text-ink-soft uppercase">
           Hilos y Papel
         </span>
+        <span aria-hidden="true" className="sb-page-fold left" />
       </div>
     )
   }
 
   return (
-    <div className="flex h-full w-full flex-col justify-center px-[9%] py-[8%]">
+    <div className="relative flex h-full w-full flex-col justify-center px-[9%] py-[8%]">
       <h3 className="font-display text-[clamp(1.1rem,3.4cqw,2rem)] leading-[1.1] font-semibold text-ink">
         {plate.title}
       </h3>
@@ -74,6 +79,7 @@ export function SketchPage({ plate, side }: { plate: Plate; side: Side }) {
           </p>
         ))}
       </div>
+      <span aria-hidden="true" className="sb-page-fold right" />
     </div>
   )
 }
