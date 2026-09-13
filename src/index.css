@@ -61,6 +61,16 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    /* Below 1440px the root stays at the reader's default and the breakpoints
+       do the work. Above it the root grows with the viewport, so the rem-built
+       page — type, spacing, the 72rem column — scales together instead of
+       sitting in a fixed 1152px strip on a wide screen: 16px at 1440, 18.6px at
+       1920, 22px at 2560, capped at 24px. The header and footer opt out (see
+       .chrome below): they keep their height while the column around them
+       widens. Media queries keep resolving rem against the initial size, so no
+       breakpoint moves. Keep the cap under 2.5x the default: that is what lets
+       browser zoom still reach 200% text (WCAG 1.4.4). */
+    font-size: clamp(1rem, 0.5357vw + 0.5179rem, 1.5rem);
   }
 
   body {
@@ -92,6 +102,41 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Chrome — header and footer
+
+   The bars do not grow with the fluid root: on a wide screen they keep their
+   height, and only their distance from the edges changes, because the column
+   they sit in keeps widening with the page. `.chrome` resets its element to
+   `medium` — the reader's default size, the same value the root holds below
+   1440px — and re-points the spacing unit and the two type tokens the bars use
+   at that size, so every Tailwind class inside keeps its 16px value. The three
+   factors mirror the @theme values; change them together.
+
+   The unit is a registered property so its `em` resolves once, here, and
+   inherits as a fixed length. Unregistered, it would re-resolve against every
+   descendant's own font size and the lockup would drag its gaps along with it.
+
+   Put it on the row inside the max-w-6xl column, never on the column itself:
+   the column's side padding has to keep growing with the page's, or the brand
+   and nav drift out of line with the content below.
+--------------------------------------------------------------------------- */
+@property --chrome-unit {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 16px;
+}
+
+@layer components {
+  .chrome {
+    font-size: medium;
+    --chrome-unit: 1em;
+    --spacing: calc(var(--chrome-unit) * 0.25);
+    --text-label: calc(var(--chrome-unit) * 0.8125);
+    --text-micro: calc(var(--chrome-unit) * 0.75);
   }
 }
 
@@ -198,7 +243,7 @@
     bottom: 0;
     left: 50%;
     z-index: 3;
-    width: 70px;
+    width: 7.8%;
     transform: translateX(-50%);
     pointer-events: none;
     background: linear-gradient(

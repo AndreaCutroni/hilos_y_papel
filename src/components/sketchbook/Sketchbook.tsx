@@ -460,7 +460,11 @@ function PlateList({
                   active ? 'text-brick' : 'text-ink hover:text-brick'
                 }`}
               >
-                <span className="font-display text-label tracking-widest opacity-70">{p.mark}</span>
+                <span
+                  className={`font-display text-label tracking-widest ${active ? '' : 'text-ink-soft group-hover:text-brick'}`}
+                >
+                  {p.mark}
+                </span>
                 <span className="flex-1 text-body">{p.index}</span>
                 <span
                   aria-hidden="true"

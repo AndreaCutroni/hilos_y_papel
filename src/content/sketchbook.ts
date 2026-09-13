@@ -1,5 +1,5 @@
 /**
- * The nine plates of the "Chi sono" sketchbook.
+ * The plates of the "Chi sono" sketchbook.
  *
  * Every caption is drawn from the brochure: Chiara's own account of learning to
  * bind in Argentina, the philosophy of respecting the time behind an object, and

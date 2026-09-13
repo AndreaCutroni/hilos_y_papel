@@ -1,5 +1,3 @@
-import { socials } from './socials'
-
 /**
  * Email, Instagram and Facebook as hand-written inline SVG — the project keeps
  * no icon package, so these are drawn to a common 24-unit box and inherit
@@ -53,26 +51,5 @@ export function FacebookIcon({ className }: IconProps) {
       />
       <path d="M9.6 11h2.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
-  )
-}
-
-/** Icon-only row, for the header. */
-export function SocialIcons({ className = '' }: { className?: string }) {
-  return (
-    <ul className={`flex items-center gap-1 ${className}`}>
-      {socials.map(({ key, label, href, Icon, external }) => (
-        <li key={key}>
-          <a
-            href={href}
-            aria-label={label}
-            title={label}
-            {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-            className="flex h-9 w-9 items-center justify-center rounded-sm text-paper transition-colors duration-200 hover:text-on-brick"
-          >
-            <Icon className="h-[18px] w-[18px]" />
-          </a>
-        </li>
-      ))}
-    </ul>
   )
 }

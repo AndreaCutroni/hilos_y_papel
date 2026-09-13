@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { navigation } from '@/content/brand'
-import { BrandLockup } from '@/components/Wordmark'
+import { BrandMark } from '@/components/BrandMark'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { transition } from '@/lib/motion'
-import marchio from '@/assets/images/marchio-mano.webp'
 
 export function Header() {
   const [open, setOpen] = useState(false)
@@ -13,46 +12,43 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-brick text-on-brick">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4 md:px-8 md:py-5">
-        {/* The mark echoes the brochure cover: a round photograph of the work in
-            progress, set beside the wordmark with the founder's name beneath. */}
-        <Link
-          to="/"
-          onClick={() => setOpen(false)}
-          className="group flex items-center gap-3 text-paper"
-          aria-label="Hilos y Papel, Chiara Castracane — home"
-        >
-          <img
-            src={marchio}
-            width={240}
-            height={240}
-            alt=""
-            aria-hidden="true"
-            className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-paper/35 md:h-13 md:w-13"
-          />
-          <BrandLockup className="text-[1.45rem] md:text-[1.75rem]" />
-        </Link>
+      {/* The column widens with the page on a wide screen; the bar inside it
+          does not. `.chrome` holds the row at the reader's default size, so the
+          header keeps its height and only its distance from the edges changes. */}
+      <div className="mx-auto max-w-6xl px-6 md:px-8">
+        <div className="chrome flex items-center justify-between gap-6 py-4 md:py-5">
+          {/* The mark echoes the brochure cover: a round photograph of the work in
+              progress, set beside the wordmark with the founder's name beneath. */}
+          <Link
+            to="/"
+            onClick={() => setOpen(false)}
+            className="group flex items-center text-paper"
+            aria-label="Hilos y Papel, Chiara Castracane — home"
+          >
+            <BrandMark />
+          </Link>
 
-        <nav aria-label="Principale" className="hidden md:block">
-          <ul className="flex items-center gap-7">
-            {navigation.map((item) => (
-              <li key={item.to}>
-                <NavItem to={item.to} label={item.label} />
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <nav aria-label="Principale" className="hidden md:block">
+            <ul className="flex items-center gap-7">
+              {navigation.map((item) => (
+                <li key={item.to}>
+                  <NavItem to={item.to} label={item.label} />
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="menu-mobile"
-          className="-mr-2 flex h-10 w-10 items-center justify-center rounded-sm md:hidden"
-        >
-          <span className="sr-only">{open ? 'Chiudi il menu' : 'Apri il menu'}</span>
-          <MenuGlyph open={open} />
-        </button>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="menu-mobile"
+            className="-mr-2 flex h-10 w-10 items-center justify-center rounded-sm md:hidden"
+          >
+            <span className="sr-only">{open ? 'Chiudi il menu' : 'Apri il menu'}</span>
+            <MenuGlyph open={open} />
+          </button>
+        </div>
       </div>
 
       <AnimatePresence initial={false}>

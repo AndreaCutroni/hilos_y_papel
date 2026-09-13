@@ -43,7 +43,7 @@ export function ChiSono() {
 
               <motion.figure
                 variants={rise}
-                className="m-0 w-full max-w-[260px] justify-self-start md:justify-self-end"
+                className="m-0 w-full max-w-[16.25rem] justify-self-start md:justify-self-end"
               >
                 <img
                   src={chiara}
@@ -67,7 +67,7 @@ export function ChiSono() {
             {...whileInViewProps}
             className="mb-10 max-w-2xl font-display text-h3 text-ink md:text-h2"
           >
-            Nove tavole sul mestiere
+            Sette tavole sul mestiere
           </motion.h2>
           <Sketchbook />
         </div>

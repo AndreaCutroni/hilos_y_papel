@@ -21,8 +21,7 @@ export function FounderName({ className = '' }: { className?: string }) {
 }
 
 /**
- * The full lockup: the wordmark over the founder's name, optionally with the
- * line of business under both.
+ * The lockup: the wordmark over the founder's name.
  *
  * "Chiara Castracane" is sized so it renders to **the same width** as "Hilos y
  * Papel" above it. That ratio is tuned to these exact strings in Amiri —
@@ -31,7 +30,7 @@ export function FounderName({ className = '' }: { className?: string }) {
  *
  * Scale the whole block by setting `font-size` on it; every line is in `em`.
  */
-export function BrandLockup({ className = '', tagline = false }: Props & { tagline?: boolean }) {
+export function BrandLockup({ className = '' }: Props) {
   return (
     <span className={`font-wordmark flex flex-col items-start leading-[1.06] ${className}`}>
       <span className="font-bold italic tracking-tight">
@@ -40,11 +39,6 @@ export function BrandLockup({ className = '', tagline = false }: Props & { tagli
       <span className="italic" style={{ fontSize: '0.710em' }}>
         Chiara Castracane
       </span>
-      {tagline && (
-        <span className="font-sans opacity-80" style={{ fontSize: '0.505em' }}>
-          Quaderni fatti a mano
-        </span>
-      )}
     </span>
   )
 }
