@@ -12,14 +12,14 @@ corrispondente in `src`.
 
 | originale | percorso attuale |
 | --- | --- |
-| `20240722_153515 2.jpg` | `brand/brand-01.jpg` |
+| `20240722_153515 2.jpg` | `brand/brand-01.jpg` (copia anche in `carte/biglietto-hilos-y-papel.jpg`) |
 | `Hilos y Papel.png` | `brand/brand-03.png` |
 | `20241116_154722.jpg` | `brand/brand-04.jpg` |
-| `20240707_200439.jpg` | `carte/onde-grigie.jpg` (copia anche in `quaderni/blu/blu-03.jpg`) |
-| `20250204_102434.jpg` | `carte/petali-rossi.jpg` |
+| `20240707_200439.jpg` | `carte/stampata-onde-grigie.jpg` (copia anche in `quaderni/blu/blu-03.jpg`) |
+| `20250204_102434.jpg` | `carte/artigianale-petali-rossi.jpg` |
 | `20240707_200104.jpg` | `quaderni/blu/blu-01.jpg` |
 | `20240707_200621.jpg` | `quaderni/blu/blu-02.jpg` |
-| `20240707_200439.jpg` | `quaderni/blu/blu-03.jpg` (stessa foto di `carte/onde-grigie.jpg`) |
+| `20240707_200439.jpg` | `quaderni/blu/blu-03.jpg` (stessa foto di `carte/stampata-onde-grigie.jpg`) |
 | `20240718_170012.jpg` | `quaderni/carta-artigianale-rosa/carta-artigianale-rosa-01.jpg` |
 | `20240718_170045.jpg` | `quaderni/carta-artigianale-rosa/carta-artigianale-rosa-02.jpg` |
 | `20240718_170210.jpg` | `quaderni/carta-artigianale-rosa/carta-artigianale-rosa-03.jpg` |
@@ -75,7 +75,7 @@ corrispondente in `src`.
 | `20241228_153624.jpg` | `quaderni/monica/monica-01.jpg` |
 | `20241228_153736.jpg` | `quaderni/monica/monica-02.jpg` |
 | `20241228_153911.jpg` | `quaderni/monica/monica-03.jpg` |
-| `20241228_154049.jpg` | `quaderni/monica/monica-04.jpg` |
+| `20241228_154049.jpg` | `quaderni/monica/monica-04.jpg` (copia anche in `carte/stampata-eucalipto.jpg`) |
 | `20241228_154116.jpg` | `quaderni/monica/monica-05.jpg` |
 | `20241228_154450.jpg` | `quaderni/monica/monica-06.jpg` |
 | `20241228_154728.jpg` | `quaderni/monica/monica-07.jpg` |
@@ -107,3 +107,58 @@ corrispondente in `src`.
 | `Tris 3.jpg` | `social/social-08.jpg` |
 
 Non più presente: `20240915_171143.jpg`, che era `brand/brand-02.jpg`.
+
+## Carte
+
+Le carte della pagina `/carte` del sito sono ritagli di queste foto, in
+`src/assets/carte/`: una cartella per carta (vedi il `LEGGIMI.md` lì).
+
+Le foto in `carte/` si chiamano tipo di carta + carta. Il tipo viene dalla
+brochure (pagine 7 e 8, «Carte fantasia disponibili»): `giapponese` sono le
+carte segnate `***`, `artigianale` le carte fatte a mano (segnate `*/**`),
+`stampata` tutte le altre fantasie stampate. L’ultima colonna riporta il segno
+della brochure: `*` in esaurimento, `**` molto pregiate, `***` carta
+giapponese. Il segno non è nel nome perché può cambiare (una carta finisce).
+
+| originale | nome | nella brochure |
+| --- | --- | --- |
+| `20250817_185905.jpg` | `carte/giapponese-conigli-e-rane.jpg` | `***` |
+| `20250817_185929.jpg` | `carte/giapponese-crisantemi-01.jpg` | `***` |
+| `20250817_190805.jpg` | `carte/giapponese-crisantemi-02.jpg` | `***` |
+| `20250817_190815.jpg` | `carte/giapponese-fiori-arancio.jpg` | `***` |
+| `20250817_190057.jpg` | `carte/giapponese-marmorizzato-blu-01.jpg` | `***` |
+| `20250817_190105.jpg` | `carte/giapponese-marmorizzato-blu-02.jpg` | `***` |
+| `20250817_190810.jpg` | `carte/giapponese-marmorizzato-blu-03.jpg` | `***` |
+| `20250817_190032.jpg` | `carte/giapponese-nuvole-oro.jpg` | `***` |
+| `20250817_190021.jpg` | `carte/giapponese-onde-rosse-01.jpg` | `***` |
+| `20250817_190800.jpg` | `carte/giapponese-onde-rosse-02.jpg` | `***` |
+| `20241228_163129.jpg` | `carte/giapponese-pois-arancio.jpg` | `***/**/*` |
+| `20241202_122030.jpg` | `carte/artigianale-petali-01.jpg` | `*/**` |
+| `20241202_122133.jpg` | `carte/artigianale-petali-02.jpg` | `*/**` |
+| `20250204_102434.jpg` | `carte/artigianale-petali-rossi.jpg` | non c’è |
+| `20241202_121941.jpg` | `carte/artigianale-trame.jpg` | `*/**` |
+| `20241202_121532.jpg` | `carte/stampata-alberi-blu.jpg` | `*` |
+| `20241208_153136.jpg` | `carte/stampata-betulle-e-foglie-01.jpg` | senza segno (quattro carte) |
+| `20241208_153144.jpg` | `carte/stampata-betulle-e-foglie-02.jpg` | senza segno (quattro carte) |
+| `20241208_153158.jpg` | `carte/stampata-betulle-e-ventagli.jpg` | senza segno (due carte) |
+| `20241228_154049.jpg` | `carte/stampata-eucalipto.jpg` | da verificare (stessa foto di `quaderni/monica/monica-04.jpg`) |
+| `20241228_162750.jpg` | `carte/stampata-fiori-turchesi.jpg` | senza segno |
+| `20241228_162337.jpg` | `carte/stampata-foglie-bordeaux.jpg` | `*` |
+| `20241202_120747.jpg` | `carte/stampata-geometrie.jpg` | senza segno (quattro carte) |
+| `20241228_163019.jpg` | `carte/stampata-intreccio-ocra.jpg` | senza segno |
+| `20241228_162640.jpg` | `carte/stampata-leopardata.jpg` | senza segno |
+| `20240707_200439.jpg` | `carte/stampata-onde-grigie.jpg` | non c’è (stessa foto di `quaderni/blu/blu-03.jpg`) |
+| `20241216_123200.jpg` | `carte/stampata-onde-verdi.jpg` | non c’è |
+| `20241228_163209.jpg` | `carte/stampata-rametti-verdi.jpg` | senza segno |
+| `20241228_163042.jpg` | `carte/stampata-rombi-01.jpg` | senza segno |
+| `20241228_163108.jpg` | `carte/stampata-rombi-02.jpg` | senza segno |
+| `20241202_121012.jpg` | `carte/stampata-scritte.jpg` | senza segno (tre carte) |
+| `20241228_162844.jpg` | `carte/stampata-soffioni-verdi.jpg` | senza segno |
+| `20241228_162716.jpg` | `carte/stampata-zebrata.jpg` | senza segno |
+| `20240722_153515 2.jpg` | `carte/biglietto-hilos-y-papel.jpg` | non è una carta: stessa foto di `brand/brand-01.jpg` |
+| `20241215_155821.jpg` | `carte/fili-colorati-01.jpg` | non è una carta: fili da ricamo |
+| `20241215_155836.jpg` | `carte/fili-colorati-02.jpg` | non è una carta: fili da ricamo |
+| `20241215_155903.jpg` | `carte/fili-colorati-03.jpg` | non è una carta: fili da ricamo |
+| `20241215_155927.jpg` | `carte/fili-colorati-04.jpg` | non è una carta: fili da ricamo |
+| `20241110_154403.jpg` | `carte/materiali-01.jpg` | non è una carta: carte, fili e aghi insieme |
+| `20241110_154626.jpg` | `carte/materiali-02.jpg` | non è una carta: carte, fili e aghi insieme |
