@@ -7,7 +7,8 @@ import { PageTransition } from '@/components/layout/PageTransition'
 import { Home } from '@/pages/Home'
 import { Quaderni } from '@/pages/Quaderni'
 import { Quaderno } from '@/pages/Quaderno'
-import { Tipologie, Carte, ComponiIlTuo } from '@/pages/stubs'
+import { Carte } from '@/pages/Carte'
+import { Tipologie, ComponiIlTuo } from '@/pages/stubs'
 import { ChiSono } from '@/pages/ChiSono'
 
 export default function App() {

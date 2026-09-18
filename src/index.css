@@ -147,8 +147,9 @@
    strips whose tangent sweeps through an arc, so paper bends the way paper
    bends. Each strip is a child of the one before it, so its rotation compounds
    — that is what makes the chain trace a curve. Driven per frame from
-   Sketchbook.tsx by writing --tt (total swing), --td (per-strip delta) and
-   --shade; nothing here re-renders through React while a page is in flight.
+   Sketchbook.tsx, which writes each strip's rotation and each face's light
+   straight onto the element that uses it (the shape is in leaf.ts); nothing
+   re-renders through React while a page is in flight.
 --------------------------------------------------------------------------- */
 @layer components {
   .sb-3d {
@@ -536,5 +537,92 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Carte (/carte)
+
+   Each paper hangs rolled up and unrolls downward as it comes up the screen.
+   The roll is drawn from the same flat photo, squeezed and shaded like a
+   cylinder, so a photo only has to be a flat, straight-on picture of the
+   sheet. Carte.tsx writes the progress straight onto these elements, reading
+   every position before writing any, so a scroll frame lays out once.
+--------------------------------------------------------------------------- */
+@layer components {
+  .cr-area {
+    position: relative;
+    aspect-ratio: 3 / 4;
+  }
+
+  /* the unrolled part, uncovered from the top as the roll descends */
+  .cr-foglio {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    will-change: clip-path;
+  }
+
+  /* where the sheet bends into the roll */
+  .cr-piega {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2.2rem;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(46, 26, 24, 0), rgba(46, 26, 24, 0.22));
+    will-change: transform, opacity;
+  }
+
+  /* The roll: the photo squeezed like the curved surface it is drawn on, its
+     pattern turning as it travels; the shading makes it a cylinder, lit from
+     above, and the shadow sets it off the page. */
+  .cr-rotolo {
+    position: absolute;
+    top: 0;
+    left: -1.5%;
+    right: -1.5%;
+    height: max(1.625rem, 8.5%);
+    overflow: hidden;
+    border-radius: 999px / 50%;
+    background-color: var(--color-paper-lift);
+    background-repeat: repeat-y;
+    box-shadow:
+      0 7px 10px -4px rgba(46, 26, 24, 0.45),
+      0 18px 26px -14px rgba(46, 26, 24, 0.4);
+    will-change: transform, background-position;
+  }
+  .cr-rotolo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      180deg,
+      rgba(46, 26, 24, 0.5) 0%,
+      rgba(255, 250, 240, 0.28) 24%,
+      rgba(255, 250, 240, 0.06) 42%,
+      rgba(46, 26, 24, 0.14) 64%,
+      rgba(46, 26, 24, 0.6) 100%
+    );
+  }
+
+  /* The «Ultimi fogli» stamp beside a paper's type, set a little crooked as a
+     hand stamp would be. Brick on sand is 4.9:1, past AA at this size. */
+  .cr-timbro {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border: 1.5px solid var(--color-brick);
+    border-radius: 3px;
+    color: var(--color-brick);
+    font-size: var(--text-micro);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    transform: rotate(-2.5deg);
   }
 }

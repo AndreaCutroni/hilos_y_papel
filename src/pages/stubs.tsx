@@ -9,15 +9,6 @@ export function Tipologie() {
   )
 }
 
-export function Carte() {
-  return (
-    <Placeholder
-      title="Carte"
-      intro="Le carte fantasia disponibili, comprese quelle giapponesi, le più pregiate e quelle ormai in esaurimento."
-    />
-  )
-}
-
 export function ComponiIlTuo() {
   return (
     <Placeholder

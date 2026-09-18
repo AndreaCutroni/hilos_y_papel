@@ -48,6 +48,7 @@ npm run format:check  # prettier --check
 src/
 ├── assets/
 │   ├── images/        # photography cropped + graded from the brochure (webp)
+│   ├── carte/         # the papers on /carte: one folder per paper, see LEGGIMI.md there
 │   └── quaderni/      # the catalogue: one folder per notebook, see LEGGIMI.md there
 ├── components/
 │   ├── hero/          # home hero: AnimatedHeadline, Hero
@@ -59,11 +60,12 @@ src/
 │   └── Wordmark.tsx
 ├── content/           # extracted brochure data, no JSX
 │   ├── brand.ts       # voice, story, hero copy, contact, nav
+│   ├── carte.ts       # loads the papers from their folders
 │   ├── products.ts    # configurator options, examples, thesis service
 │   ├── quaderni.ts    # loads the catalogue from the notebook folders
 │   └── sketchbook.ts  # the /chi-sono plates
 ├── lib/               # motion variants, hooks (reduced motion, media query), handwriting
-├── pages/             # Home, Quaderni, Quaderno, ChiSono, Placeholder + stubs
+├── pages/             # Home, Quaderni, Quaderno, Carte, ChiSono, Placeholder + stubs
 ├── App.tsx            # routes wrapped in AnimatePresence
 └── index.css          # @theme tokens, fluid root, .chrome, sketchbook leaf + paper
 ```
@@ -73,9 +75,10 @@ keep the two in sync.
 
 ## Routes
 
-`/`, `/quaderni`, `/quaderni/:slug` and `/chi-sono` are built. `/tipologie`,
-`/carte` and `/componi-il-tuo` render `Placeholder` via `pages/stubs.tsx` and
-are waiting to be built from the data already sitting in `content/products.ts`.
+`/`, `/quaderni`, `/quaderni/:slug`, `/carte` and `/chi-sono` are built.
+`/tipologie` and `/componi-il-tuo` render `Placeholder` via `pages/stubs.tsx`
+and are waiting to be built from the data already sitting in
+`content/products.ts`.
 
 ### The catalogue on `/quaderni`
 
@@ -117,6 +120,41 @@ nothing reads them.
   survives the back button. Grid covers are cropped square; the gallery on
   `/quaderni/:slug` contains each photo and never crops it. `cover2` is only
   rendered where a real hover exists.
+
+### The papers on `/carte`
+
+Like the catalogue, the papers are folders: `src/assets/carte/<slug>/` holds
+one photo (any name) and `carta.json` (`nome`; `tipo`: giapponese, artigianale
+or stampata; `"ultimi fogli"`; `quaderno`; `ordine`), read by `content/carte.ts` through
+`import.meta.glob`. The owner's guide is `src/assets/carte/LEGGIMI.md`. The
+photos are 900×1200 crops of the archive in `references/images/carte/`.
+
+- **Under each paper**: its name, its type in words («Carta giapponese»,
+  «Carta stampata», «Carta artigianale») and, when it is running out, the
+  outline «Ultimi fogli» stamp — the owner's scheme, tried without names and
+  brought back. When `quaderno` names a notebook of the catalogue, a small
+  hand-drawn notebook icon at the bottom right links to it as an example; a
+  name that matches no notebook only loses the icon, and is flagged in dev.
+- **Which notebook uses which paper is the owner's to say.** The links come
+  from matching names, from the owner's own photos filed in both places (onde
+  grigie is `blu`, eucalipto is `monica`), or from the owner directly (conigli
+  e rane is `lepre`, crisantemi is `crisantemi-blu`).
+- **Type and last sheets come from the brochure** (pages 7–8: `***` carta
+  giapponese, `*` in esaurimento) or from the owner — never from a photo.
+- **Each paper unrolls with the scroll**, downward like a hanging scroll:
+  rolled while it sits low on the screen, open by the time its top is a third
+  of the way down, rolling back up if the reader scrolls back. It follows the
+  scroll, so it has no duration. The roll is drawn from the same photo,
+  squeezed and shaded like a cylinder, so a photo only has to be a flat,
+  straight-on picture of the sheet: one taken at an angle shrinks the pattern
+  toward the top, and a curled sheet bakes its folds in — both break the
+  illusion.
+- `useSrotola` in `pages/Carte.tsx` reads every paper's position before
+  writing any, and writes straight onto the elements, so a scroll frame lays
+  out once. The first pass and every resize place all the papers; a scroll
+  frame moves only those near the screen. The roll's copy of the photo is set
+  once the paper is near, so it loads as lazily as the sheet. Under reduced
+  motion every paper is simply open.
 
 ### The sketchbook on `/chi-sono`
 
@@ -246,9 +284,10 @@ Spacing follows an 8px rhythm.
 
 ## Conventions
 
-- **Motion**: 200–400ms, ease-out, 8–16px translate distances. The one
-  exception is the sketchbook's page turn on `/chi-sono`, which follows the
-  hand. The hero once opened with an 850ms page-turn reveal; it was removed at
+- **Motion**: 200–400ms, ease-out, 8–16px translate distances. Two exceptions
+  follow the reader's own gesture instead of a clock: the sketchbook's page
+  turn on `/chi-sono`, which follows the hand, and the papers unrolling on
+  `/carte`, which follow the scroll. The hero once opened with an 850ms page-turn reveal; it was removed at
   the owner's request. Do not reintroduce a load animation over the hero
   photograph.
 - **Sizing scales with wide screens — except the chrome.** The root
