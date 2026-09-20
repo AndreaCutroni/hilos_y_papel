@@ -272,7 +272,16 @@ Typography:
   lockup and is the **only** way the mark appears: the header and the footer
   both render it, so they cannot drift apart. The footer's line of business
   sits under it, outside the component, so the photograph stays centred on the
-  two lines exactly as it is in the header.
+  two lines exactly as it is in the header. There it runs the mark's whole
+  measure, from the photograph's left edge to the end of the wordmark, kept
+  small and tracked out like a stamped line: the two `em` sizes are chosen so
+  one letter-spacing (0.19em) carries it across at both widths, and
+  `text-align-last: justify` closes the rest, so it lands flush however wide
+  Amiri sets the wordmark on the reader's machine. Its column needs
+  `self-start`, or on a phone it stretches to the footer's width and the line
+  overshoots. Measure the glyphs, not the box: a justified line drops the
+  trailing letter-space, so compensating for it overshoots by one.
+  **Re-measure if either string changes.**
 - **Caveat** (`--font-hand`) for the hero line that writes itself on, and
   nothing else.
 - **Fraunces** (`--font-display`) for headlines.
