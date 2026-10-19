@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Route, Routes, useLocation, useMatch, type Location } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -13,6 +13,12 @@ import { ChiSono } from '@/pages/ChiSono'
 
 export default function App() {
   const location = useLocation()
+  /* A notebook opens as a pop-up over the catalogue. The page underneath is the
+     one it was opened from — carried in the link's state — or the catalogue
+     itself when someone lands on a notebook's address directly. */
+  const sfondo = (location.state as { sfondo?: Location } | null)?.sfondo ?? null
+  const dietro = sfondo ?? location
+  const quaderno = useMatch('/quaderni/:slug')
 
   return (
     <>
@@ -27,12 +33,13 @@ export default function App() {
 
       <div id="contenuto">
         <AnimatePresence mode="wait" initial={false}>
-          <PageTransition key={location.pathname}>
-            <ScrollToTop />
-            <Routes location={location}>
+          <PageTransition key={dietro.pathname}>
+            <ScrollToTop percorso={dietro.pathname} />
+            <Routes location={dietro}>
               <Route path="/" element={<Home />} />
               <Route path="/quaderni" element={<Quaderni />} />
-              <Route path="/quaderni/:slug" element={<Quaderno />} />
+              {/* the catalogue is also what sits behind the pop-up */}
+              <Route path="/quaderni/:slug" element={<Quaderni />} />
               <Route path="/tipologie" element={<Tipologie />} />
               <Route path="/carte" element={<Carte />} />
               <Route path="/componi-il-tuo" element={<ComponiIlTuo />} />
@@ -43,14 +50,17 @@ export default function App() {
       </div>
 
       <Footer />
+
+      {quaderno?.params.slug && <Quaderno slug={quaderno.params.slug} />}
     </>
   )
 }
 
-function ScrollToTop() {
-  const { pathname } = useLocation()
+/** The page behind a pop-up keeps its place, so only a real page change scrolls
+    back to the top. */
+function ScrollToTop({ percorso }: { percorso: string }) {
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [pathname])
+  }, [percorso])
   return null
 }

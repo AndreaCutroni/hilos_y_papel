@@ -76,6 +76,8 @@ keep the two in sync.
 ## Routes
 
 `/`, `/quaderni`, `/quaderni/:slug`, `/carte` and `/chi-sono` are built.
+`/quaderni/:slug` is not a page of its own: it opens as a pop-up over the
+catalogue, which keeps rendering behind it.
 `/tipologie` and `/componi-il-tuo` render `Placeholder` via `pages/stubs.tsx`
 and are waiting to be built from the data already sitting in
 `content/products.ts`.
@@ -116,6 +118,39 @@ nothing reads them.
   list. "Componine uno simile" opens `/componi-il-tuo` with `genere`,
   `tipologia` and `formato` in the query string; the configurator will have to
   read them and cope with `a5-orizzontale`.
+- **No notebook name is shown anywhere** — the owner asked for the catalogue
+  to speak through the photographs. Every name is still in the page for screen
+  readers: an `sr-only` span names the grid's card and its link, an `sr-only`
+  `h1` titles the notebook page, and the previous/next links carry theirs in
+  `aria-label`. (The papers on `/carte` do show their names: that is the
+  owner's choice for that page, not an oversight here.)
+- **A notebook opens as a pop-up over the catalogue**, not as a page of its
+  own: a native `<dialog>` opened with `showModal()` (`pages/Quaderno.tsx`), so
+  the browser keeps focus inside, handles Escape, makes the page behind inert
+  and gives a `::backdrop` to blur it. It closes on Escape, on a click outside
+  and on the button at the top right, always back to the page it was opened
+  from — the catalogue, or the papers on `/carte`, each with its own scroll
+  position — never `history.back()`, which after a few notebooks inside the
+  pop-up steps back only one. `App` keeps the grid underneath by routing on the
+  background location the link carries in `state.sfondo`, so the grid holds its
+  filters and its scroll position; a direct visit to a notebook's address
+  renders the grid behind it too. `html:has(dialog[open])` stops the page
+  behind from scrolling, and `scrollbar-gutter: stable` keeps it from shifting
+  sideways when it does.
+- **One screenful on a wide screen, a finger scroll on a phone.** Above `md`
+  the pop-up never scrolls: the type takes what it needs and the photograph
+  takes the rest, so a short laptop shrinks the photograph instead of hiding
+  the details below a fold. A phone shows exactly the same details — the sheet
+  drawing and both descriptions included, at the owner's asking — and scrolls
+  them, with the close button and previous/next staying put above and below.
+  Anything added here still has to earn its height on a wide screen: that is
+  why the strip of other notebooks was dropped in favour of previous/next
+  alone.
+- **A row that can overflow sideways needs `contain-paint`** as well as
+  `overflow-x-auto`: the photo thumbnails have it. Measured on the strip that
+  used to sit here — without it the page itself took the row's whole width,
+  2104px on a 390px phone, and scrolled sideways into empty sand, even though
+  the row did clip its own content.
 - Filters live in the query string, so a filtered grid can be shared and
   survives the back button. Grid covers are cropped square; the gallery on
   `/quaderni/:slug` contains each photo and never crops it. `cover2` is only
@@ -314,6 +349,10 @@ Spacing follows an 8px rhythm.
   side padding must keep growing with the page's, or the brand and nav fall out
   of line with the content. Build anything new in the bars from those tokens or
   in `em`, as `BrandMark` does — a raw `rem` there will grow.
+- **The hand on anything pressable.** `index.css` gives `button`, `[role="button"]`,
+  a `label[for]` and `summary` `cursor: pointer` in the base layer, because the
+  browser's own arrow on a button reads as "nothing to press here". Links
+  already do it themselves.
 - **Reduced motion**: every animation needs a reduced or near-instant variant.
   Use `useReducedMotion()` from `@/lib/useReducedMotion` and branch, plus the
   global `prefers-reduced-motion` block in `index.css`.

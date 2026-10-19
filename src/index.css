@@ -71,6 +71,14 @@
        breakpoint moves. Keep the cap under 2.5x the default: that is what lets
        browser zoom still reach 200% text (WCAG 1.4.4). */
     font-size: clamp(1rem, 0.5357vw + 0.5179rem, 1.5rem);
+    /* The gutter is always reserved, so opening a pop-up — which stops the
+       page behind from scrolling — does not shift the page sideways. */
+    scrollbar-gutter: stable;
+  }
+
+  /* the page behind a pop-up stays put */
+  html:has(dialog[open]) {
+    overflow: hidden;
   }
 
   body {
@@ -90,6 +98,15 @@
     font-family: var(--font-display);
     font-weight: 600;
     text-wrap: balance;
+  }
+
+  /* A button is clickable, so it takes the hand: the browser's own arrow reads
+     as "nothing to press here" to most people. Links already do this. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  label[for],
+  summary {
+    cursor: pointer;
   }
 
   :focus-visible {

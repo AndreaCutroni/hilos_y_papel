@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
 import { carteFantasia, nomeTipo, problemiCarte, type CartaFantasia } from '@/content/carte'
@@ -64,6 +64,9 @@ export function Carte() {
 }
 
 function CartaAppesa({ carta }: { carta: CartaFantasia }) {
+  /* The notebook opens as a pop-up over this page, and closing it comes
+     back here rather than to the catalogue. */
+  const sfondo = useLocation()
   return (
     <figure className="m-0">
       {/* The roll's copy of the photo is set by useSrotola once the paper is
@@ -93,6 +96,7 @@ function CartaAppesa({ carta }: { carta: CartaFantasia }) {
         {carta.quaderno && (
           <Link
             to={`/quaderni/${encodeURIComponent(carta.quaderno.slug)}`}
+            state={{ sfondo }}
             aria-label={`Un quaderno con questa carta: ${carta.quaderno.nome}`}
             title="Vedi un quaderno fatto con questa carta"
             className="-mr-2.5 -mb-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-sm text-ink-soft transition-colors duration-200 hover:text-brick"

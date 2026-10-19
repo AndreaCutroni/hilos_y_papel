@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
 import {
@@ -152,8 +152,15 @@ export function Quaderni() {
 }
 
 function VoceCatalogo({ q }: { q: Quaderno }) {
+  /* The notebook opens as a pop-up over this grid: the state tells App which
+     page to keep rendering behind it, filters and scroll position and all. */
+  const sfondo = useLocation()
   return (
-    <Link to={`/quaderni/${encodeURIComponent(q.slug)}`} className="group block rounded-[3px]">
+    <Link
+      to={`/quaderni/${encodeURIComponent(q.slug)}`}
+      state={{ sfondo }}
+      className="group block rounded-[3px]"
+    >
       <div className="relative aspect-square overflow-hidden rounded-[3px] bg-paper-lift">
         <img
           src={q.cover1}
@@ -174,10 +181,10 @@ function VoceCatalogo({ q }: { q: Quaderno }) {
           />
         )}
       </div>
-      <h2 className="mt-4 text-body-lg leading-tight text-ink transition-colors duration-200 group-hover:text-brick md:text-h4">
-        {q.nome}
-      </h2>
-      <p className="mt-1.5 text-label text-ink-soft">
+      {/* The name is kept for screen readers — it is also what names this link —
+          but not shown: the owner wants the grid to speak through the photographs. */}
+      <span className="sr-only">{q.nome}</span>
+      <p className="mt-4 text-label text-ink-soft transition-colors duration-200 group-hover:text-brick">
         {nomeTipologia.get(q.tipologia)} · {formatoDi(q)}
       </p>
       {q.genere === 'personalizzato' && (
