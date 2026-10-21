@@ -2,6 +2,7 @@ import { useId } from 'react'
 import { motion } from 'framer-motion'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { handwritingTiming } from '@/lib/handwriting'
+import { DietroHandwriting } from './DietroHandwriting'
 
 type Props = {
   words: readonly string[]
@@ -16,10 +17,8 @@ type Props = {
 const tilt = (i: number) => [-0.55, 0.4, -0.25, 0.6, -0.4, 0.3][i % 6]
 
 /**
- * Writes the hero line on, a word at a time, by wiping a clip from left to
- * right across each word — the way a nib lays ink down. Each word takes time in
- * proportion to its length, so the line paces itself like a hand rather than
- * ticking along on a fixed stagger.
+ * The opening word uses traced pen strokes as a handwriting trial. Remaining
+ * words keep the horizontal reveal, paced in proportion to their length.
  */
 export function AnimatedHeadline({ words, threadWord, className = '', startDelay = 0.3 }: Props) {
   const reduced = useReducedMotion()
@@ -30,20 +29,33 @@ export function AnimatedHeadline({ words, threadWord, className = '', startDelay
     <h1 className={`font-hand ${className}`} aria-label={label}>
       {words.map((w, i) => (
         <span key={`${w}-${i}`} aria-hidden="true" className="relative inline-block align-baseline">
-          <motion.span
-            className="relative inline-block"
-            style={{ rotate: reduced ? 0 : tilt(i) }}
-            initial={reduced ? false : { clipPath: 'inset(-18% 100% -18% -4%)' }}
-            animate={{ clipPath: 'inset(-18% -4% -18% -4%)' }}
-            transition={
-              reduced
-                ? { duration: 0.01 }
-                : { duration: durations[i], delay: starts[i], ease: 'linear' }
-            }
-          >
-            {w}
-            {i === threadWord && <ThreadUnderline draw={!reduced} delay={settled + 0.12} />}
-          </motion.span>
+          {i === 0 && w === 'Dietro' ? (
+            <motion.span
+              className="relative inline-block"
+              style={{ rotate: reduced ? 0 : tilt(i) }}
+            >
+              <DietroHandwriting startDelay={starts[i]} reduced={reduced} />
+            </motion.span>
+          ) : (
+            <motion.span
+              className="relative inline-block"
+              style={{ rotate: reduced ? 0 : tilt(i) }}
+              /* Space in em preserves accents and handwritten overhangs even on short words. */
+              initial={reduced ? false : { clipPath: 'inset(-0.3em 100% -0.3em -0.3em)' }}
+              animate={{
+                clipPath: reduced ? 'none' : 'inset(-0.3em -0.3em -0.3em -0.3em)',
+                transitionEnd: { clipPath: 'none' },
+              }}
+              transition={
+                reduced
+                  ? { duration: 0.01 }
+                  : { duration: durations[i], delay: starts[i], ease: 'linear' }
+              }
+            >
+              {w}
+              {i === threadWord && <ThreadUnderline draw={!reduced} delay={settled + 0.12} />}
+            </motion.span>
+          )}
           {i < words.length - 1 && <span className="inline-block w-[0.28em]" />}
         </span>
       ))}

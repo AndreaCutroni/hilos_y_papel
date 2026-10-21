@@ -8,7 +8,8 @@ import { Home } from '@/pages/Home'
 import { Quaderni } from '@/pages/Quaderni'
 import { Quaderno } from '@/pages/Quaderno'
 import { Carte } from '@/pages/Carte'
-import { Tipologie, ComponiIlTuo } from '@/pages/stubs'
+import { Tipologie } from '@/pages/Tipologie'
+import { ComponiIlTuo } from '@/pages/ComponiIlTuo'
 import { ChiSono } from '@/pages/ChiSono'
 
 export default function App() {

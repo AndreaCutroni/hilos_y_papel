@@ -291,6 +291,11 @@ function Dati({ q }: { q: Voce }) {
       {/* The name still titles the pop-up for screen readers, but is not shown:
           the owner wants the notebook to speak through its photographs. */}
       <h1 className="sr-only">{q.nome}</h1>
+      {q.disponibile && (
+        <motion.p variants={apparire} className="mb-4 max-w-full self-start px-1 pt-2 pb-1">
+          <span className="timbro max-w-full">Disponibile subito</span>
+        </motion.p>
+      )}
       {/* The owner's own words from quaderno.json, when there are any. */}
       {q.descrizione && (
         <motion.p
@@ -335,7 +340,7 @@ function Dati({ q }: { q: Voce }) {
           to={componiSimile(q)}
           className="inline-flex items-center rounded-sm bg-brick px-5 py-2.5 text-label font-bold tracking-wide text-on-brick uppercase transition-colors duration-200 hover:bg-brick-deep"
         >
-          Componine uno simile
+          Ordina
         </Link>
       </motion.p>
     </motion.div>

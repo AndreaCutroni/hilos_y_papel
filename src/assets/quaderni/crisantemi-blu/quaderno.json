@@ -3,5 +3,6 @@
   "tipologia": "flex",
   "formato": "A6 verticale",
   "personalizzato": false,
+  "disponibile": false,
   "ordine": 3
 }

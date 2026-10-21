@@ -31,6 +31,7 @@ export type Quaderno = {
   taglia: Taglia
   orientamento: Orientamento
   genere: Genere
+  disponibile: boolean
   cover1: string
   cover2: string | null
   /** The gallery: images/ in file-name order, or the covers when it is empty. */
@@ -140,6 +141,7 @@ function leggi(slug: string, scheda: unknown): Letto {
     )
   if (typeof s.personalizzato !== 'boolean')
     errori.push('"personalizzato" deve essere true o false')
+  if (typeof s.disponibile !== 'boolean') errori.push('"disponibile" deve essere true o false')
   if (s.ordine !== undefined && typeof s.ordine !== 'number')
     errori.push('"ordine" deve essere un numero')
   if (s.descrizione !== undefined && typeof s.descrizione !== 'string')
@@ -166,6 +168,7 @@ function leggi(slug: string, scheda: unknown): Letto {
       taglia: formato[0],
       orientamento: formato[1],
       genere: s.personalizzato ? 'personalizzato' : 'fantasia',
+      disponibile: s.disponibile === true,
       cover1,
       cover2,
       foto: images.length ? images : cover2 ? [cover1, cover2] : [cover1],

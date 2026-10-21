@@ -1,13 +1,19 @@
-import { useLayoutEffect, useRef, type RefObject } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLayoutEffect, useMemo, useRef, type RefObject } from 'react'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
+import { FilterGroup, FilterChip } from '@/components/catalog/Filters'
 import { carteFantasia, nomeTipo, problemiCarte, type CartaFantasia } from '@/content/carte'
 import { generi } from '@/content/products'
 import { rise, riseStagger } from '@/lib/motion'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 
 const fantasia = generi.find((g) => g.id === 'fantasia')
+const tipiCarta = [
+  { valore: 'giapponese', nome: 'Giapponesi' },
+  { valore: 'artigianale', nome: 'Artigianali' },
+  { valore: 'stampata', nome: 'Stampate' },
+] as const
 
 /**
  * The papers, each hanging rolled up and unrolling downward as it comes up the
@@ -17,7 +23,14 @@ const fantasia = generi.find((g) => g.id === 'fantasia')
 export function Carte() {
   const reduced = useReducedMotion()
   const elenco = useRef<HTMLUListElement>(null)
-  useSrotola(elenco, reduced)
+  const [params, setParams] = useSearchParams()
+  const tipoRichiesto = params.get('tipo')
+  const tipo = tipiCarta.some((t) => t.valore === tipoRichiesto) ? tipoRichiesto : null
+  const visibili = useMemo(() => carteFantasia.filter((c) => !tipo || c.tipo === tipo), [tipo])
+  useSrotola(elenco, reduced, visibili)
+
+  const impostaTipo = (valore: string | null) =>
+    setParams(valore ? { tipo: valore } : {}, { replace: true })
 
   return (
     <section className="bg-paper">
@@ -45,19 +58,55 @@ export function Carte() {
 
       <ThreadDivider className="mx-auto max-w-6xl px-6 md:px-8" />
 
-      <div className="mx-auto max-w-6xl px-6 pt-12 pb-24 md:px-8 md:pt-16 md:pb-32">
+      <div className="mx-auto max-w-6xl px-6 pt-10 pb-24 md:px-8 md:pb-32">
+        <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-5">
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+            <FilterGroup nome="Tipo">
+              <FilterChip attivo={!tipo} onClick={() => impostaTipo(null)}>
+                Tutte
+              </FilterChip>
+              {tipiCarta.map((t) => (
+                <FilterChip
+                  key={t.valore}
+                  attivo={tipo === t.valore}
+                  onClick={() => impostaTipo(t.valore)}
+                >
+                  {t.nome}
+                </FilterChip>
+              ))}
+            </FilterGroup>
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <p aria-live="polite" className="text-label text-ink-soft">
+              {visibili.length} {visibili.length === 1 ? 'carta' : 'carte'}
+            </p>
+            {tipo && (
+              <button
+                type="button"
+                onClick={() => setParams({}, { replace: true })}
+                className="text-label font-bold text-accent underline-offset-4 hover:underline"
+              >
+                Azzera filtri
+              </button>
+            )}
+          </div>
+        </div>
+
         {import.meta.env.DEV && problemiCarte.length > 0 && <DaSistemare />}
 
         <ul
           ref={elenco}
-          className="grid grid-cols-1 gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16"
+          className="mt-10 grid grid-cols-1 gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16"
         >
-          {carteFantasia.map((c) => (
+          {visibili.map((c) => (
             <li key={c.slug}>
               <CartaAppesa carta={c} />
             </li>
           ))}
         </ul>
+        {visibili.length === 0 && (
+          <p className="mt-2 text-body-lg text-ink">Nessuna carta con questi filtri.</p>
+        )}
       </div>
     </section>
   )
@@ -89,7 +138,7 @@ function CartaAppesa({ carta }: { carta: CartaFantasia }) {
           <h2 className="text-h4 leading-tight text-ink">{carta.nome}</h2>
           <p className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-label text-ink-soft">
             {nomeTipo[carta.tipo]}
-            {carta.ultimiFogli && <span className="cr-timbro">Ultimi fogli</span>}
+            {carta.ultimiFogli && <span className="timbro">Ultimi fogli</span>}
           </p>
         </div>
         {/* A notebook of the catalogue made with this paper, as an example. */}
@@ -109,22 +158,21 @@ function CartaAppesa({ carta }: { carta: CartaFantasia }) {
   )
 }
 
-/** A notebook with its binding showing: the stitches cross the spine the way
-    the Coptic sewing does on the real ones. */
+/** Lucide BookOpen, ISC license: public/licenses/Lucide-ISC.txt. */
 function IconaQuaderno() {
   return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-6 w-6"
+      className="h-7 w-7"
       aria-hidden="true"
     >
-      <rect x="6.5" y="3" width="13" height="18" rx="1.5" />
-      <path d="M4 6.5h5M4 10.5h5M4 14.5h5M4 18.5h5" />
+      <path d="M12 5v16" />
+      <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" />
     </svg>
   )
 }
@@ -137,7 +185,11 @@ function IconaQuaderno() {
  * a scroll frame lays the page out once however many papers there are. Under
  * reduced motion every paper is simply open.
  */
-function useSrotola(elenco: RefObject<HTMLUListElement | null>, reduced: boolean) {
+function useSrotola(
+  elenco: RefObject<HTMLUListElement | null>,
+  reduced: boolean,
+  carte: readonly CartaFantasia[]
+) {
   useLayoutEffect(() => {
     const ul = elenco.current
     if (!ul) return
@@ -200,7 +252,7 @@ function useSrotola(elenco: RefObject<HTMLUListElement | null>, reduced: boolean
       removeEventListener('resize', ridimensiona)
       cancelAnimationFrame(raf)
     }
-  }, [elenco, reduced])
+  }, [elenco, reduced, carte])
 }
 
 /** Dev only: the paper folders that could not go on the page, or look odd. */

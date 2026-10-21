@@ -1,7 +1,8 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
+import { FilterGroup as Gruppo, FilterChip as Chip } from '@/components/catalog/Filters'
 import {
   formatoDi,
   immaginiDaControllare,
@@ -24,6 +25,7 @@ export function Quaderni() {
   const copertina = params.get('copertina')
   const formato = params.get('formato')
   const personalizzati = params.get('personalizzati') === '1'
+  const filtrati = Boolean(copertina || formato || personalizzati)
 
   const visibili = quaderni.filter(
     (q) =>
@@ -100,9 +102,20 @@ export function Quaderni() {
               Solo personalizzati
             </Chip>
           </div>
-          <p aria-live="polite" className="text-label text-ink-soft">
-            {visibili.length} {visibili.length === 1 ? 'quaderno' : 'quaderni'}
-          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <p aria-live="polite" className="text-label text-ink-soft">
+              {visibili.length} {visibili.length === 1 ? 'quaderno' : 'quaderni'}
+            </p>
+            {filtrati && (
+              <button
+                type="button"
+                onClick={() => setParams({}, { replace: true })}
+                className="text-label font-bold text-accent underline-offset-4 hover:underline"
+              >
+                Azzera filtri
+              </button>
+            )}
+          </div>
         </div>
 
         {import.meta.env.DEV && <DaSistemare />}
@@ -192,6 +205,7 @@ function VoceCatalogo({ q }: { q: Quaderno }) {
           Personalizzato
         </p>
       )}
+      {q.disponibile && <span className="timbro mt-3 max-w-full">Disponibile subito</span>}
     </Link>
   )
 }
@@ -254,40 +268,4 @@ function useFotoPesanti() {
     }
   }, [])
   return pesanti
-}
-
-function Gruppo({ nome, children }: { nome: string; children: ReactNode }) {
-  return (
-    <div role="group" aria-label={nome} className="flex flex-wrap items-center gap-2">
-      <span aria-hidden="true" className="mr-1 text-label text-ink-soft">
-        {nome}
-      </span>
-      {children}
-    </div>
-  )
-}
-
-function Chip({
-  attivo,
-  onClick,
-  children,
-}: {
-  attivo: boolean
-  onClick: () => void
-  children: ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={attivo}
-      onClick={onClick}
-      className={`rounded-sm border px-3 py-1.5 text-label font-semibold transition-colors duration-200 ${
-        attivo
-          ? 'border-brick bg-brick text-on-brick'
-          : 'border-ink/20 text-ink hover:border-brick hover:text-brick'
-      }`}
-    >
-      {children}
-    </button>
-  )
 }

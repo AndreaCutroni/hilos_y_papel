@@ -627,9 +627,9 @@
     );
   }
 
-  /* The «Ultimi fogli» stamp beside a paper's type, set a little crooked as a
-     hand stamp would be. Brick on sand is 4.9:1, past AA at this size. */
-  .cr-timbro {
+  /* Shared by «Ultimi fogli» and «Disponibile subito», set a little crooked
+     as a hand stamp would be. Brick on sand is 4.9:1, past AA at this size. */
+  .timbro {
     display: inline-block;
     padding: 0.15rem 0.5rem;
     border: 1.5px solid var(--color-brick);

@@ -27,8 +27,7 @@ export const hero = {
   headline: ['Dietro', 'ogni', 'oggetto', 'c’è', 'un', 'tempo', 'da', 'rispettare.'],
   subhead:
     'A 16 anni ho imparato a cucire la carta, per le strade colorate dell’Argentina, e non ho più smesso. Ogni quaderno nasce da una scelta accurata tra fili, colori, carta e creatività.',
-  primaryCta: { label: 'Componi il tuo quaderno', to: '/componi-il-tuo' },
-  secondaryCta: { label: 'Guarda i quaderni', to: '/quaderni' },
+  primaryCta: { label: 'Guarda i quaderni', to: '/quaderni' },
 } as const
 
 export const story = {

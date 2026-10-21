@@ -5,23 +5,20 @@ import { AnimatedHeadline } from './AnimatedHeadline'
 import { CopticSeam } from '@/components/motifs/CopticSeam'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { EASE_OUT } from '@/lib/motion'
-import { handwritingTiming } from '@/lib/handwriting'
 import notebookOpen from '@/assets/images/notebook-open-green.webp'
 import stitchDetail from '@/assets/images/stitch-detail.webp'
 
 export function Hero() {
   const reduced = useReducedMotion()
   const HEAD_START = 0.3
-  /* Everything under the headline waits for the pen to finish. */
-  const settle = handwritingTiming(hero.headline, HEAD_START).settled
 
   const fadeUp = (delay: number) =>
     reduced
       ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.01 } }
       : {
-          initial: { opacity: 0, y: 14 },
+          initial: { opacity: 0, y: 8 },
           animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.4, ease: EASE_OUT, delay },
+          transition: { duration: 0.55, ease: EASE_OUT, delay },
         }
 
   return (
@@ -47,31 +44,18 @@ export function Hero() {
             />
 
             <motion.p
-              {...fadeUp(settle)}
+              {...fadeUp(0.45)}
               className="mt-7 max-w-lg text-body-lg text-ink-soft text-pretty"
             >
               {hero.subhead}
             </motion.p>
 
-            <motion.div
-              {...fadeUp(settle + 0.1)}
-              className="mt-9 flex flex-wrap items-center gap-4"
-            >
+            <motion.div {...fadeUp(0.65)} className="mt-9 flex flex-wrap items-center gap-4">
               <Link
                 to={hero.primaryCta.to}
                 className="inline-flex items-center rounded-sm bg-brick px-6 py-3 text-label font-bold tracking-wide text-on-brick uppercase transition-colors duration-200 hover:bg-brick-deep"
               >
                 {hero.primaryCta.label}
-              </Link>
-              <Link
-                to={hero.secondaryCta.to}
-                className="group inline-flex items-center gap-2 text-label font-bold tracking-wide text-ink uppercase"
-              >
-                {hero.secondaryCta.label}
-                <span
-                  aria-hidden="true"
-                  className="h-px w-8 origin-left bg-accent transition-transform duration-200 ease-out group-hover:scale-x-125"
-                />
               </Link>
             </motion.div>
           </div>
@@ -79,10 +63,10 @@ export function Hero() {
           {/* Photograph. Width is capped near the image's native 636px below lg so
               it never upscales into softness. */}
           <motion.div
-            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
+            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={
-              reduced ? { duration: 0.01 } : { duration: 0.4, ease: EASE_OUT, delay: 0.2 }
+              reduced ? { duration: 0.01 } : { duration: 0.6, ease: EASE_OUT, delay: 0.2 }
             }
             className="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:max-w-none"
           >

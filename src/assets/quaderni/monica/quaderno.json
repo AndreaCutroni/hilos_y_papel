@@ -3,5 +3,6 @@
   "tipologia": "rigido",
   "formato": "A5 verticale",
   "personalizzato": false,
+  "disponibile": false,
   "ordine": 9
 }

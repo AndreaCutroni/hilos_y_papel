@@ -65,7 +65,7 @@ src/
 │   ├── quaderni.ts    # loads the catalogue from the notebook folders
 │   └── sketchbook.ts  # the /chi-sono plates
 ├── lib/               # motion variants, hooks (reduced motion, media query), handwriting
-├── pages/             # Home, Quaderni, Quaderno, Carte, ChiSono, Placeholder + stubs
+├── pages/             # Home, Quaderni, Quaderno, Carte, ChiSono, Tipologie, ComponiIlTuo
 ├── App.tsx            # routes wrapped in AnimatePresence
 └── index.css          # @theme tokens, fluid root, .chrome, sketchbook leaf + paper
 ```
@@ -78,9 +78,18 @@ keep the two in sync.
 `/`, `/quaderni`, `/quaderni/:slug`, `/carte` and `/chi-sono` are built.
 `/quaderni/:slug` is not a page of its own: it opens as a pop-up over the
 catalogue, which keeps rendering behind it.
-`/tipologie` and `/componi-il-tuo` render `Placeholder` via `pages/stubs.tsx`
-and are waiting to be built from the data already sitting in
-`content/products.ts`.
+`/tipologie` and `/componi-il-tuo` are built and share the Rigido/Flex data in
+`content/products.ts`. Tipologie keeps Rigido and Flex in two light cards,
+side by side even on phones, with equal photo frames below the descriptions
+and bullet lists. Album has its own section and two photo placeholders.
+Refill is separate: adding sheets to a rigid notebook the reader already owns.
+Its product photographs come from brochure page 4, in `assets/tipologie/`.
+
+The configurator has one presentation: a full-width step navigation above the
+choices and a right-hand summary aligned with the current step's label.
+On the final step, the editable choices appear only in the main column; the
+side panel keeps the image and price range. The final contact link prepares
+an email with the configuration, without sending it automatically.
 
 ### The catalogue on `/quaderni`
 
@@ -116,8 +125,8 @@ nothing reads them.
   showing nothing, and the dev list flags a sheet that says otherwise.
 - **A5 orizzontale** exists in the catalogue but not in the brochure's format
   list. "Componine uno simile" opens `/componi-il-tuo` with `genere`,
-  `tipologia` and `formato` in the query string; the configurator will have to
-  read them and cope with `a5-orizzontale`.
+  `tipologia` and `formato` in the query string; the configurator reads them
+  and preserves `a5-orizzontale` as a format to agree with Chiara.
 - **No notebook name is shown anywhere** — the owner asked for the catalogue
   to speak through the photographs. Every name is still in the page for screen
   readers: an `sr-only` span names the grid's card and its link, an `sr-only`

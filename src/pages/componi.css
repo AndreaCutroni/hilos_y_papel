@@ -1,0 +1,612 @@
+.componi-container {
+  max-width: 72rem;
+  margin: auto;
+  padding: 2rem 2rem 4rem;
+}
+.componi-kicker {
+  color: var(--color-accent);
+  font-size: var(--text-label);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.componi-intro {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  align-items: end;
+  padding: 3rem 0 2rem;
+}
+.componi-intro h1 {
+  font-size: var(--text-h1);
+  margin-top: 1rem;
+  line-height: 1.06;
+}
+.componi-intro h1 > span {
+  display: block;
+  color: var(--color-accent);
+}
+.componi-intro > p {
+  max-width: 26rem;
+  color: var(--color-ink-soft);
+  font-size: var(--text-body-lg);
+}
+.componi-intro > p > span {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: var(--text-body);
+}
+.componi-content {
+  margin-top: 2rem;
+}
+.componi-main {
+  min-width: 0;
+}
+.componi-step-nav ol {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brick) 35%, transparent);
+}
+.componi-step-nav li {
+  flex: 1;
+}
+.componi-step-nav button {
+  width: 100%;
+  text-align: left;
+  color: var(--color-ink-soft);
+  font-size: var(--text-label);
+  padding: 0.5rem 0 1rem;
+  border-bottom: 3px solid transparent;
+}
+.componi-step-nav button span {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+.componi-step-nav button[aria-current='step'] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 800;
+}
+.componi-step-nav button:disabled {
+  color: var(--color-ink-soft);
+  border-bottom-style: dotted;
+}
+.componi-panel-heading {
+  margin-bottom: 1.75rem;
+}
+.componi-panel-heading h2 {
+  font-size: var(--text-h3);
+  margin: 0.5rem 0 0.75rem;
+}
+.componi-panel-heading > p:last-child {
+  color: var(--color-ink-soft);
+  max-width: 40rem;
+}
+.componi-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.componi-choice {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--color-brick) 45%, transparent);
+  cursor: pointer;
+  min-width: 0;
+  background: var(--color-paper-lift);
+}
+.componi-choice:hover {
+  border-color: var(--color-brick);
+}
+.componi-choice.is-selected {
+  outline: 2px solid var(--color-brick);
+  outline-offset: 2px;
+}
+.componi-choice:has(input:focus-visible) {
+  outline: 3px solid var(--color-brick);
+  outline-offset: 4px;
+}
+.componi-choice input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.componi-check {
+  position: absolute;
+  z-index: 1;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--color-brick);
+  border-radius: 50%;
+  background: var(--color-paper-lift);
+  display: grid;
+  place-items: center;
+  color: var(--color-accent);
+  font-size: var(--text-label);
+  font-weight: 900;
+}
+.is-selected .componi-check {
+  color: var(--color-on-brick);
+  background: var(--color-brick);
+}
+.componi-choice-photo {
+  width: 100%;
+  height: 11rem;
+  object-fit: cover;
+}
+.componi-choice-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.25rem;
+  flex: 1;
+}
+.componi-choice-copy > strong {
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
+  font-weight: 600;
+}
+.componi-choice-copy > span {
+  font-size: var(--text-label);
+  color: var(--color-ink-soft);
+}
+.componi-choice-copy > small {
+  font-size: var(--text-label);
+  font-weight: 800;
+  color: var(--color-accent);
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+.componi-choice.is-disabled {
+  background: transparent;
+  cursor: default;
+  border-style: dashed;
+}
+.componi-choice.is-disabled img {
+  filter: grayscale(1);
+}
+.componi-choice.is-disabled::after {
+  content: 'Disponibile per Fantasia';
+  position: absolute;
+  top: 1rem;
+  left: 0.75rem;
+  background: var(--color-paper-lift);
+  color: var(--color-ink);
+  padding: 0.25rem 0.5rem;
+  font-size: var(--text-label);
+}
+.componi-formats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.componi-format-space {
+  height: 12rem;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 2rem 1rem 1rem;
+}
+.componi-format-shape {
+  width: 6.77rem;
+  height: 9.6rem;
+  border: 2px solid var(--color-brick);
+  border-left: 5px double var(--color-brick);
+  display: grid;
+  place-items: center;
+  color: var(--color-accent);
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
+}
+.componi-format-shape.a6-verticale {
+  width: 4.8rem;
+  height: 6.77rem;
+}
+.componi-format-shape.a6-orizzontale {
+  width: 6.77rem;
+  height: 4.8rem;
+}
+.componi-format-shape.a5-orizzontale {
+  width: 9.6rem;
+  height: 6.77rem;
+}
+.componi-paper-sample {
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.componi-paper-sample > span {
+  display: block;
+  width: 4rem;
+  height: 6rem;
+  background: #d6c5aa;
+  border: 1px solid var(--color-ink-soft);
+  transform: rotate(-15deg);
+  margin-right: -2rem;
+}
+.componi-paper-sample > span:nth-child(2) {
+  transform: rotate(0);
+}
+.componi-paper-sample > span:nth-child(3) {
+  transform: rotate(15deg);
+  margin-right: 0;
+}
+.componi-paper-sample.bianca > span {
+  background: #f5ede1;
+}
+.componi-note {
+  margin: 0 0 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-brick);
+  font-size: var(--text-label);
+  color: var(--color-ink-soft);
+}
+.componi-formats + .componi-note {
+  margin-top: 1.5rem;
+}
+.componi-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 2rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-brick) 35%, transparent);
+  padding-top: 1.25rem;
+}
+.componi-secondary {
+  padding: 0.8rem 1.25rem;
+  font-size: var(--text-label);
+  font-weight: 800;
+  border: 1px solid var(--color-brick);
+}
+.componi-primary {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1.5rem;
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  background: var(--color-brick);
+  color: var(--color-on-brick);
+  margin-left: auto;
+  transition:
+    background-color 200ms,
+    border-color 200ms,
+    color 200ms;
+}
+.componi-primary:hover:not(:disabled) {
+  background: var(--color-brick-deep);
+}
+.componi-primary:disabled {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--color-ink) 20%, transparent);
+  color: var(--color-ink);
+  font-weight: 600;
+  cursor: not-allowed;
+}
+.componi-back {
+  font-size: var(--text-label);
+  color: var(--color-ink-soft);
+  padding: 0.75rem 0;
+}
+.componi-back:disabled {
+  visibility: hidden;
+}
+
+.componi-swatches {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.componi-swatches img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+}
+.componi-swatches .componi-choice-copy {
+  padding: 0.75rem;
+}
+.componi-swatches .componi-choice-copy strong {
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 800;
+}
+.componi-personal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.componi-inspirations {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+.componi-inspirations strong,
+.componi-inspirations span {
+  display: block;
+  font-size: var(--text-label);
+}
+.componi-inspirations strong {
+  margin-bottom: 0.5rem;
+  color: var(--color-accent);
+}
+.componi-personal label {
+  font-weight: 800;
+  font-size: var(--text-label);
+  margin-top: 0.5rem;
+}
+.componi-personal label span {
+  font-weight: 400;
+}
+.componi-personal textarea,
+.componi-personal input {
+  width: 100%;
+  border: 1px solid var(--color-brick);
+  background: var(--color-paper-lift);
+  padding: 0.75rem;
+  font-size: var(--text-body);
+}
+.componi-personal textarea::placeholder,
+.componi-personal input::placeholder {
+  color: var(--color-ink-soft);
+}
+.componi-personal .componi-note {
+  margin-top: 1rem;
+}
+.componi-summary > div {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brick) 25%, transparent);
+}
+.componi-summary dt {
+  font-size: var(--text-label);
+  color: var(--color-ink-soft);
+}
+.componi-summary dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  font-weight: 800;
+}
+.componi-summary button {
+  font-size: var(--text-label);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  font-weight: 400;
+  color: var(--color-accent);
+}
+.componi-finish {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--color-paper-lift);
+}
+.componi-finish h3 {
+  font-size: var(--text-h3);
+  margin: 0.75rem 0;
+}
+.componi-finish > p:not(.componi-kicker) {
+  max-width: 40rem;
+}
+.componi-finish-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.componi-finish-actions .componi-primary {
+  margin-left: 0;
+}
+.componi-idea {
+  margin-top: 1.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.componi-idea strong {
+  display: block;
+}
+.componi-bottom-note {
+  margin-top: 3rem;
+  max-width: 48rem;
+  font-size: var(--text-label);
+  color: var(--color-ink-soft);
+}
+.componi-workspace {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 2.5rem;
+  align-items: start;
+}
+.componi-desk {
+  background: var(--color-paper-lift);
+  padding: 1.25rem;
+  position: sticky;
+  top: 7rem;
+}
+.componi-desk figure {
+  margin-top: 1rem;
+}
+.componi-desk figure img {
+  width: 100%;
+  height: 13rem;
+  object-fit: cover;
+}
+.componi-desk figcaption {
+  font-size: var(--text-micro);
+  color: var(--color-ink-soft);
+  margin-top: 0.5rem;
+}
+.componi-desk .componi-summary > div {
+  grid-template-columns: 1fr;
+  gap: 0.25rem;
+  padding: 0.65rem 0;
+}
+.componi-desk .componi-summary dd {
+  font-size: var(--text-label);
+}
+.componi-desk-empty {
+  padding: 2rem 0;
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
+}
+.componi-desk-empty > span {
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  color: var(--color-accent);
+}
+.componi-desk-empty > p {
+  margin-top: 0.75rem;
+}
+.componi-price {
+  font-size: var(--text-label);
+  margin-top: 1.25rem;
+}
+.componi-price strong {
+  display: block;
+  font-size: var(--text-h3);
+  font-family: var(--font-display);
+  color: var(--color-accent);
+  margin: 0.25rem 0;
+}
+.componi-price > span {
+  color: var(--color-ink-soft);
+  font-size: var(--text-micro);
+}
+.componi-formats .componi-choice-copy {
+  padding: 0.75rem;
+}
+.componi-formats .componi-choice-copy > strong {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+}
+@media (max-width: 63.99rem) {
+  .componi-workspace {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    gap: 1.5rem;
+  }
+  .componi-choices {
+    gap: 1rem;
+  }
+  .componi-formats {
+    grid-template-columns: 1fr;
+  }
+  .componi-format-space {
+    height: 10rem;
+  }
+}
+@media (max-width: 47.99rem) {
+  .componi-container {
+    padding: 1.5rem 1.5rem 3rem;
+  }
+  .componi-intro {
+    grid-template-columns: 1fr;
+    padding: 2rem 0 1.5rem;
+    gap: 1.5rem;
+  }
+  .componi-intro h1 {
+    font-size: var(--text-h2);
+  }
+  .componi-intro > p {
+    font-size: var(--text-body);
+  }
+  .componi-step-nav ol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem 1rem;
+  }
+  .componi-step-nav button {
+    min-height: 3rem;
+    padding: 0.5rem 0;
+  }
+  .componi-step-nav button span {
+    display: inline;
+    margin-right: 0.5rem;
+  }
+  .componi-choices {
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+  .componi-choice-photo {
+    height: 12rem;
+  }
+  .componi-choice-copy {
+    padding: 1rem;
+  }
+  .componi-formats {
+    grid-template-columns: 1fr;
+  }
+  .componi-formats .componi-choice {
+    flex-direction: row;
+    align-items: center;
+  }
+  .componi-format-space {
+    width: 9rem;
+    flex-shrink: 0;
+    height: 9rem;
+    padding: 1rem;
+    align-items: center;
+  }
+  .componi-format-shape {
+    width: 4.74rem;
+    height: 6.72rem;
+  }
+  .componi-format-shape.a6-verticale {
+    width: 3.36rem;
+    height: 4.74rem;
+  }
+  .componi-format-shape.a6-orizzontale {
+    width: 4.74rem;
+    height: 3.36rem;
+  }
+  .componi-format-shape.a5-orizzontale {
+    width: 6.72rem;
+    height: 4.74rem;
+  }
+  .componi-formats .componi-choice-copy {
+    padding: 2rem 0.75rem 1rem 0;
+  }
+  .componi-formats .componi-choice-copy > strong {
+    font-size: var(--text-body);
+  }
+  .componi-actions {
+    flex-wrap: wrap;
+  }
+
+  .componi-swatches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .componi-inspirations {
+    grid-template-columns: 1fr;
+  }
+  .componi-summary > div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+  .componi-summary button {
+    min-height: 2.75rem;
+  }
+  .componi-workspace {
+    grid-template-columns: 1fr;
+  }
+  .componi-desk {
+    position: static;
+    width: 100%;
+  }
+  .componi-desk figure img {
+    height: 14rem;
+  }
+}

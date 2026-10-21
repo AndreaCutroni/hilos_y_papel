@@ -58,13 +58,9 @@ export function Home() {
             <motion.p variants={rise} className="mt-8">
               <Link
                 to="/chi-sono"
-                className="group inline-flex items-center gap-2 text-label font-bold tracking-wide text-accent uppercase"
+                className="inline-flex items-center rounded-sm bg-brick px-6 py-3 text-label font-bold tracking-wide text-on-brick uppercase transition-colors duration-200 hover:bg-brick-deep"
               >
                 La mia storia
-                <span
-                  aria-hidden="true"
-                  className="h-px w-8 origin-left bg-accent transition-transform duration-200 ease-out group-hover:scale-x-125"
-                />
               </Link>
             </motion.p>
           </motion.div>

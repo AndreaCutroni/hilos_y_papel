@@ -33,7 +33,7 @@ export const tipologie = [
     name: 'Rigido',
     traits: [
       'Copertina rigida',
-      'Rilegatura a vista',
+      'Cucitura a vista',
       'Adatto per occasioni speciali ma anche per appunti e schizzi di tutti i giorni',
     ],
   },
@@ -41,8 +41,8 @@ export const tipologie = [
     id: 'flex' satisfies Tipologia,
     name: 'Flex',
     traits: [
-      'Flessibile, pieghevole, agevole, tascabile',
-      'Rilegatura non a vista',
+      'Copertina flessibile',
+      'Rilegatura nascosta',
       'Comodo da portare in giro e mettere in borsa o in tasca',
     ],
   },

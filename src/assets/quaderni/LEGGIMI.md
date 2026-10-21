@@ -73,6 +73,7 @@ niente; le foto originali già in `references` restano dove sono. Il
   "tipologia": "rigido",
   "formato": "A5 verticale",
   "personalizzato": false,
+  "disponibile": false,
   "ordine": 1
 }
 ```
@@ -83,6 +84,7 @@ niente; le foto originali già in `references` restano dove sono. Il
 | `tipologia`      | `"rigido"` oppure `"flex"`                                                                    |
 | `formato`        | `"A5 verticale"`, `"A5 orizzontale"`, `"A6 verticale"` oppure `"A6 orizzontale"`              |
 | `personalizzato` | `true` se la copertina è personalizzata, altrimenti `false`                                   |
+| `disponibile`    | `true` se il quaderno è pronto: mostra «Disponibile subito» nel catalogo e nella scheda; altrimenti `false` |
 | `ordine`         | facoltativo: la posizione nel catalogo, dal numero più piccolo; senza, il quaderno va in fondo |
 | `descrizione`    | facoltativo: qualche riga sul quaderno, che compare nella sua pagina                          |
 

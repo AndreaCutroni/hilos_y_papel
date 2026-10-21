@@ -45,7 +45,7 @@ src/
 │   └── Wordmark.tsx
 ├── content/         Brand copy and product data
 ├── lib/             Shared motion variants, reduced-motion hook
-├── pages/           Home plus placeholders for the unbuilt routes
+├── pages/           Site pages, including Tipologie and the notebook configurator
 ├── App.tsx          Route definitions
 └── index.css        Design tokens (@theme), base styles, paper texture
 references/          Brand brochure — source of truth for voice and identity
@@ -55,18 +55,21 @@ references/          Brand brochure — source of truth for voice and identity
 
 ## Routes
 
-| Path              | Status      |
-| ----------------- | ----------- |
-| `/`               | Built       |
-| `/chi-sono`       | Built       |
-| `/quaderni`       | Placeholder |
-| `/tipologie`      | Placeholder |
-| `/carte`          | Placeholder |
-| `/componi-il-tuo` | Placeholder |
+| Path              | Status |
+| ----------------- | ------ |
+| `/`               | Built  |
+| `/chi-sono`       | Built  |
+| `/quaderni`       | Built  |
+| `/tipologie`      | Built  |
+| `/carte`          | Built  |
+| `/componi-il-tuo` | Built  |
 
-The data behind the placeholder pages — the notebook configurator options,
-worked examples with pricing, and the thesis-binding specification — is already
-transcribed in `src/content/products.ts`.
+The notebook configurator options, worked examples with pricing, and the
+thesis-binding specification are transcribed in `src/content/products.ts`.
+The Tipologie page uses the same Rigido/Flex descriptions and characteristics;
+its photographs live in `src/assets/tipologie/`. Album keeps two photo
+placeholders, while Refill is a separate section for adding sheets to an
+existing rigid notebook.
 
 ## Design notes
 
