@@ -558,6 +558,274 @@
   }
 }
 
+/* The phone spread uses the same strip chain around a horizontal fold.
+   Everything is scoped to the mobile host; the desktop geometry stays above. */
+@layer components {
+  @media (width < 768px) {
+    .sb-vertical {
+      max-width: 26rem;
+      margin-inline: auto;
+      perspective: calc(var(--pw, 336px) * 3.9);
+      perspective-origin: 50% 50%;
+    }
+
+    .sb-vertical .sb-book {
+      height: 42rem;
+      aspect-ratio: auto;
+    }
+
+    .sb-vertical .sb-half {
+      left: 0;
+      bottom: auto;
+      width: 100%;
+      height: 50%;
+    }
+    .sb-vertical .sb-half.left {
+      top: 0;
+      border-radius: var(--sb-r) var(--sb-r) 0 0;
+    }
+    .sb-vertical .sb-half.right {
+      top: 50%;
+      border-radius: 0 0 var(--sb-r) var(--sb-r);
+    }
+
+    .sb-vertical .sb-illustration {
+      padding: 1.75rem 1.5rem;
+    }
+    .sb-vertical .sb-illustration svg {
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .sb-vertical .sb-note {
+      padding: 1.75rem 1.5rem;
+    }
+    .sb-vertical .sb-note h3 {
+      font-size: clamp(1.25rem, 6cqw, 1.5rem);
+    }
+    .sb-vertical .sb-note > p {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+    .sb-vertical .sb-note > div {
+      margin-top: 1rem;
+    }
+    .sb-vertical .sb-note > div p {
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    .sb-vertical .sb-note > div p + p {
+      margin-top: 0.625rem;
+    }
+
+    .sb-vertical .sb-occl,
+    .sb-vertical .sb-band {
+      left: 0;
+      right: 0;
+      height: 100%;
+    }
+    .sb-vertical .sb-half.left .sb-occl {
+      background: linear-gradient(
+        0deg,
+        rgba(46, 26, 24, 0.3),
+        rgba(46, 26, 24, 0.11) 20%,
+        transparent 52%
+      );
+    }
+    .sb-vertical .sb-half.right .sb-occl {
+      background: linear-gradient(
+        180deg,
+        rgba(46, 26, 24, 0.3),
+        rgba(46, 26, 24, 0.11) 20%,
+        transparent 52%
+      );
+    }
+    .sb-vertical .sb-half.left .sb-band {
+      transform-origin: center bottom;
+      background: linear-gradient(
+        0deg,
+        rgba(46, 26, 24, 0.85),
+        rgba(46, 26, 24, 0.32) 28%,
+        transparent
+      );
+    }
+    .sb-vertical .sb-half.right .sb-band {
+      transform-origin: center top;
+      background: linear-gradient(
+        180deg,
+        rgba(46, 26, 24, 0.85),
+        rgba(46, 26, 24, 0.32) 28%,
+        transparent
+      );
+    }
+
+    .sb-vertical .sb-page-fold {
+      left: 0;
+      right: 0;
+      bottom: auto;
+      width: 100%;
+      height: 18%;
+    }
+    .sb-vertical .sb-page-fold.left {
+      top: auto;
+      bottom: 0;
+      background:
+        linear-gradient(180deg, transparent calc(100% - 1px), rgba(46, 26, 24, 0.18) 0),
+        linear-gradient(
+          180deg,
+          transparent,
+          rgba(255, 250, 240, 0.1) 52%,
+          transparent 72%,
+          rgba(46, 26, 24, 0.07) 86%,
+          rgba(46, 26, 24, 0.24) 99%
+        );
+    }
+    .sb-vertical .sb-page-fold.right {
+      top: 0;
+      background:
+        linear-gradient(0deg, transparent calc(100% - 1px), rgba(46, 26, 24, 0.18) 0),
+        linear-gradient(
+          0deg,
+          transparent,
+          rgba(255, 250, 240, 0.13) 52%,
+          transparent 72%,
+          rgba(46, 26, 24, 0.05) 86%,
+          rgba(46, 26, 24, 0.17) 99%
+        );
+    }
+
+    .sb-vertical .sb-sewing {
+      top: 50%;
+      bottom: auto;
+      left: 0;
+      width: 100%;
+      height: 0;
+    }
+    .sb-vertical .sb-hole {
+      top: 0;
+      width: max(2px, calc(var(--bw) * 0.0052));
+    }
+    .sb-vertical .sb-thread {
+      top: 0;
+      height: max(1.5px, calc(var(--bw) * 0.0028));
+      transform: translateY(-50%);
+      background:
+        repeating-linear-gradient(30deg, rgba(255, 240, 235, 0.16) 0 1px, transparent 1px 3px),
+        linear-gradient(180deg, #561623, #93404f 42%, #7a2033 64%, #4a121e);
+    }
+
+    .sb-vertical .sb-curl {
+      width: 100%;
+      height: var(--pw);
+    }
+    .sb-vertical .sb-curl.next {
+      top: 50%;
+      left: 0;
+      transform-origin: center top;
+    }
+    .sb-vertical .sb-curl.prev {
+      top: auto;
+      bottom: 50%;
+      right: auto;
+      left: 0;
+      transform-origin: center bottom;
+    }
+    .sb-vertical .sb-strip {
+      width: 100%;
+      height: calc(var(--pw) / var(--n));
+    }
+    .sb-vertical .sb-curl.next .sb-strip {
+      left: 0;
+      transform-origin: center top;
+    }
+    .sb-vertical .sb-curl.prev .sb-strip {
+      top: auto;
+      bottom: 0;
+      right: auto;
+      left: 0;
+      transform-origin: center bottom;
+    }
+    .sb-vertical .sb-curl.next .sb-strip .sb-strip {
+      top: 100%;
+      left: 0;
+    }
+    .sb-vertical .sb-curl.prev .sb-strip .sb-strip {
+      bottom: 100%;
+      right: auto;
+      left: 0;
+    }
+    .sb-vertical .sb-face {
+      right: 0;
+      bottom: -1.1px;
+    }
+    .sb-vertical .sb-face.back {
+      transform-origin: 50% calc(var(--pw) / var(--n) / 2);
+      transform: rotateX(180deg);
+    }
+    .sb-vertical .sb-curl.next > .sb-strip > .sb-face.back,
+    .sb-vertical .sb-curl.prev > .sb-strip > .sb-face.front {
+      bottom: 0;
+    }
+    .sb-vertical .sb-curl.next .sb-strip.edge > .sb-face.front,
+    .sb-vertical .sb-curl.prev .sb-strip.edge > .sb-face.back {
+      border-radius: 0 0 var(--sb-r) var(--sb-r);
+      box-shadow: inset 0 -1px rgba(46, 26, 24, 0.14);
+    }
+    .sb-vertical .sb-curl.next .sb-strip.edge > .sb-face.back,
+    .sb-vertical .sb-curl.prev .sb-strip.edge > .sb-face.front {
+      border-radius: var(--sb-r) var(--sb-r) 0 0;
+      box-shadow: inset 0 1px rgba(46, 26, 24, 0.14);
+    }
+    .sb-vertical .sb-slice {
+      width: 100%;
+      height: var(--pw);
+    }
+
+    /* Only these outer edges claim a vertical drag. The drawing and text
+       retain normal browser scrolling, including when the book is tall. */
+    .sb-grip {
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 8;
+      height: 2.75rem;
+      touch-action: none;
+      cursor: grab;
+      transform: translateZ(2px);
+    }
+    .sb-grip:active {
+      cursor: grabbing;
+    }
+    .sb-grip.top {
+      top: 0;
+    }
+    .sb-grip.bottom {
+      bottom: 0;
+    }
+    .sb-grip span {
+      position: absolute;
+      left: 50%;
+      width: 2.25rem;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--color-brick);
+      transform: translateX(-50%);
+    }
+    .sb-grip.top span {
+      top: 0.625rem;
+    }
+    .sb-grip.bottom span {
+      bottom: 0.625rem;
+    }
+  }
+
+  @media (width < 360px) {
+    .sb-vertical .sb-book {
+      height: 46rem;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

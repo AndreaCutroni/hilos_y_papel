@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { plates, sketchbookHint } from '@/content/sketchbook'
 import { SketchPage } from './SketchPage'
-import { PlateCard } from './PlateCard'
 import { STRIPS as N, edgeOnScreen, leafAt, shade, thetaForEdge, type Dir } from './leaf'
 import { useReducedMotion } from '@/lib/useReducedMotion'
 import { useMediaQuery } from '@/lib/useMediaQuery'
@@ -24,6 +22,7 @@ type Drive =
 /** The elements a frame writes to, found once each time a leaf is mounted. */
 type Rig = {
   dir: Dir
+  vertical: boolean
   curl: HTMLElement
   strips: { el: HTMLElement; front: HTMLElement; back: HTMLElement }[]
 }
@@ -33,8 +32,7 @@ const neighbour = (i: number, dir: Dir) => (dir === 'next' ? (i + 1) % M : (i - 
 
 export function Sketchbook() {
   const reduced = useReducedMotion()
-  /* The dragged spread needs room for two pages of type; below that the plate
-     is read as a single stacked card. */
+  /* On phones the same spread opens vertically, with upright content. */
   const asSpread = useMediaQuery('(min-width: 768px)')
 
   const [idx, setIdx] = useState(0)
@@ -73,8 +71,8 @@ export function Sketchbook() {
     const host = hostRef.current
     if (!book || !host) return
     host.style.setProperty('--bw', book.clientWidth + 'px')
-    host.style.setProperty('--pw', book.clientWidth / 2 + 'px')
-  }, [])
+    host.style.setProperty('--pw', (asSpread ? book.clientWidth : book.clientHeight) / 2 + 'px')
+  }, [asSpread])
 
   useLayoutEffect(() => {
     measure()
@@ -93,15 +91,17 @@ export function Sketchbook() {
     if (!r) return
     const leaf = leafAt(theta)
     const lift = Math.sin(theta)
-    const sign = r.dir === 'next' ? -1 : 1
+    const sign = (r.dir === 'next' ? -1 : 1) * (r.vertical ? -1 : 1)
     const next = r.dir === 'next'
+    const rotate = r.vertical ? 'rotateX' : 'rotateY'
+    const gradient = r.vertical ? '180deg' : '90deg'
 
-    r.curl.style.transform = `translateZ(var(--sb-leaf-z)) rotateY(${(sign * leaf.planes[0]).toFixed(4)}rad)`
+    r.curl.style.transform = `translateZ(var(--sb-leaf-z)) ${rotate}(${(sign * leaf.planes[0]).toFixed(4)}rad)`
     for (let i = 0; i < r.strips.length; i++) {
       const s = r.strips[i]
       if (i > 0) {
         const bend = sign * (leaf.planes[i] - leaf.planes[i - 1])
-        s.el.style.transform = `rotateY(${bend.toFixed(4)}rad)`
+        s.el.style.transform = `${rotate}(${bend.toFixed(4)}rad)`
       }
       /* each gradient runs between the light at the strip's two edges, which
          its neighbours share, so the leaf shades as one continuous sheet */
@@ -109,8 +109,8 @@ export function Sketchbook() {
       const f1 = shade(leaf.bounds[i + 1], 'front', r.dir, lift)
       const b0 = shade(leaf.bounds[i], 'back', r.dir, lift)
       const b1 = shade(leaf.bounds[i + 1], 'back', r.dir, lift)
-      s.front.style.background = `linear-gradient(90deg,${next ? f0 : f1},${next ? f1 : f0})`
-      s.back.style.background = `linear-gradient(90deg,${next ? b1 : b0},${next ? b0 : b1})`
+      s.front.style.background = `linear-gradient(${gradient},${next ? f0 : f1},${next ? f1 : f0})`
+      s.back.style.background = `linear-gradient(${gradient},${next ? b1 : b0},${next ? b0 : b1})`
     }
 
     /* The soft shadow just past the free edge, on whichever page the edge is
@@ -125,7 +125,8 @@ export function Sketchbook() {
       const alpha =
         (0.5 * (1 - Math.min(1, leaf.edgeZ * 1.3)) ** 1.5 + 0.05 * lift) * k * k * (3 - 2 * k)
       band.style.opacity = alpha.toFixed(3)
-      band.style.transform = `translateX(${(x * 100).toFixed(2)}%) scaleX(${width.toFixed(3)})`
+      const axis = r.vertical ? 'Y' : 'X'
+      band.style.transform = `translate${axis}(${(x * 100).toFixed(2)}%) scale${axis}(${width.toFixed(3)})`
     }
     if (other) other.style.opacity = '0'
 
@@ -293,12 +294,12 @@ export function Sketchbook() {
       const back = el.querySelector<HTMLElement>(':scope > .sb-face.back > .sb-lit')
       if (front && back) strips.push({ el, front, back })
     }
-    rig.current = { dir: turn.dir, curl, strips }
+    rig.current = { dir: turn.dir, vertical: !asSpread, curl, strips }
     applyLeaf(sim.current.theta)
     const go = onMount.current
     onMount.current = null
     go?.()
-  }, [turn, applyLeaf])
+  }, [turn, applyLeaf, asSpread])
 
   /* ------------------------------------------------------------- drag */
   const drag = useRef<{
@@ -309,10 +310,12 @@ export function Sketchbook() {
     u0: number
     x0: number
     moved: number
+    vertical: boolean
   } | null>(null)
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return
+    if (!asSpread && (!e.isPrimary || !(e.target as HTMLElement).closest('.sb-grip'))) return
     if ((e.target as HTMLElement).closest('button')) return
     const book = bookRef.current
     if (!book) return
@@ -322,9 +325,10 @@ export function Sketchbook() {
     e.preventDefault()
     setHintGone(true)
     stageRef.current?.setPointerCapture(e.pointerId)
-    const spine = r.left + r.width / 2
-    const half = r.width / 2
-    const dir: Dir = e.clientX >= spine ? 'next' : 'prev'
+    const pos = asSpread ? e.clientX : e.clientY
+    const spine = asSpread ? r.left + r.width / 2 : r.top + r.height / 2
+    const half = (asSpread ? r.width : r.height) / 2
+    const dir: Dir = pos >= spine ? 'next' : 'prev'
     const t = reduced ? null : begin(dir)
     if (t) sim.current.drive = { kind: 'hand', target: 0 }
     drag.current = {
@@ -332,45 +336,47 @@ export function Sketchbook() {
       dir,
       spine,
       half,
-      u0: Math.max(0.05, Math.abs(e.clientX - spine) / half),
-      x0: e.clientX,
+      u0: Math.max(0.05, Math.abs(pos - spine) / half),
+      x0: pos,
       moved: 0,
+      vertical: !asSpread,
     }
   }
 
   const onPointerMove = (e: React.PointerEvent) => {
     const d = drag.current
     if (!d) return
-    d.moved = Math.max(d.moved, Math.abs(e.clientX - d.x0))
+    const pos = d.vertical ? e.clientY : e.clientX
+    d.moved = Math.max(d.moved, Math.abs(pos - d.x0))
     const S = sim.current
     if (!d.turn || S.drive?.kind !== 'hand') return
     /* The free edge follows the hand. From where the page was picked up to the
        far page's outer edge is the whole turn, however near the spine it was
        taken. */
-    const u = ((e.clientX - d.spine) / d.half) * (d.dir === 'next' ? 1 : -1)
+    const u = ((pos - d.spine) / d.half) * (d.dir === 'next' ? 1 : -1)
     S.drive.target = thetaForEdge(1 - (2 * (d.u0 - u)) / (d.u0 + 1))
     run()
   }
 
-  const endDrag = () => {
+  const endDrag = (cancelled = false) => {
     const d = drag.current
     if (!d) return
     drag.current = null
     /* reduced motion: no leaf, a tap simply turns */
     if (!d.turn) {
-      if (d.moved < 6) step(d.dir)
+      if (!cancelled && d.moved < 6) step(d.dir)
       return
     }
     const t = d.turn
     if (live.current !== t) return
-    if (d.moved < 6) {
+    if (!cancelled && d.moved < 6) {
       glide(t)
       return
     }
     /* let go past halfway and it lands; a flick carries it either way. The
        spring starts from the hand's own speed, so nothing stops and restarts. */
     const S = sim.current
-    const over = S.theta > PI / 2 ? S.v > -2.2 : S.v > 2.6
+    const over = !cancelled && (S.theta > PI / 2 ? S.v > -2.2 : S.v > 2.6)
     S.drive = over
       ? { kind: 'spring', target: PI + 0.08, done: () => land(t, true) }
       : { kind: 'spring', target: -0.08, done: () => land(t, false) }
@@ -380,7 +386,9 @@ export function Sketchbook() {
   /* -------------------------------------------------------- keyboard */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+      const prevKey = asSpread ? 'ArrowLeft' : 'ArrowDown'
+      const nextKey = asSpread ? 'ArrowRight' : 'ArrowUp'
+      if (e.key !== prevKey && e.key !== nextKey) return
       if (e.metaKey || e.ctrlKey || e.altKey) return
       const t = e.target as HTMLElement | null
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
@@ -390,11 +398,11 @@ export function Sketchbook() {
       const r = stage.getBoundingClientRect()
       if (r.bottom < 0 || r.top > innerHeight) return
       e.preventDefault()
-      step(e.key === 'ArrowRight' ? 'next' : 'prev')
+      step(e.key === nextKey ? 'next' : 'prev')
     }
     addEventListener('keydown', onKey)
     return () => removeEventListener('keydown', onKey)
-  }, [step])
+  }, [step, asSpread])
 
   /* ----------------------------------------------------------- render */
   const spread = (i: number) => ({
@@ -420,31 +428,6 @@ export function Sketchbook() {
 
   const current = plates[turn ? turn.to : idx]
 
-  if (!asSpread) {
-    return (
-      <div className="w-full">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={current.id}
-            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduced ? { opacity: 0 } : { opacity: 0, y: -6 }}
-            transition={
-              reduced ? { duration: 0.01 } : { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] }
-            }
-          >
-            <PlateCard plate={current} />
-          </motion.div>
-        </AnimatePresence>
-        <Pager idx={idx} turn={turn} step={step} />
-        <PlateList plates={plates} activeIdx={turn ? turn.to : idx} goTo={goTo} />
-        <p className="sr-only" aria-live="polite">
-          Tavola {(turn ? turn.to : idx) + 1} di {M}: {current.title}. {current.lede}
-        </p>
-      </div>
-    )
-  }
-
   return (
     <div className="w-full">
       <div
@@ -452,15 +435,20 @@ export function Sketchbook() {
         className="relative mx-auto flex max-w-5xl touch-pan-y items-center gap-1 select-none sm:gap-3"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
+        onPointerUp={() => endDrag()}
+        onPointerCancel={() => endDrag(!asSpread)}
         onDragStart={(e) => e.preventDefault()}
       >
-        <SideArrow label="Tavola precedente" onClick={() => step('prev')}>
-          <path d="M15 5L8 13l7 8" />
-        </SideArrow>
+        {asSpread && (
+          <SideArrow label="Tavola precedente" onClick={() => step('prev')}>
+            <path d="M15 5L8 13l7 8" />
+          </SideArrow>
+        )}
 
-        <div ref={hostRef} className="sb-3d relative min-w-0 flex-1 md:max-w-4xl">
+        <div
+          ref={hostRef}
+          className={`sb-3d relative min-w-0 flex-1 md:max-w-4xl${asSpread ? '' : ' sb-vertical'}`}
+        >
           <div ref={deskRef} className="sb-desk" aria-hidden="true">
             <div className="sb-cast ambient" />
             <div className="sb-cast contact" />
@@ -483,24 +471,46 @@ export function Sketchbook() {
               <div ref={bandR} className="sb-band" aria-hidden="true" />
             </div>
 
-            <Binding />
+            <Binding vertical={!asSpread} />
 
             {turn && (
               <div className={`sb-curl ${turn.dir}`} style={{ ['--n' as string]: N }}>
-                <Strip i={0} dir={turn.dir} front={leafFront} back={leafBack} />
+                <Strip
+                  i={0}
+                  dir={turn.dir}
+                  front={leafFront}
+                  back={leafBack}
+                  vertical={!asSpread}
+                />
               </div>
+            )}
+            {!asSpread && (
+              <>
+                <div className="sb-grip top" aria-hidden="true">
+                  <span />
+                </div>
+                <div className="sb-grip bottom" aria-hidden="true">
+                  <span />
+                </div>
+              </>
             )}
           </div>
         </div>
 
-        <SideArrow label="Tavola successiva" onClick={() => step('next')}>
-          <path d="M9 5l7 8-7 8" />
-        </SideArrow>
+        {asSpread && (
+          <SideArrow label="Tavola successiva" onClick={() => step('next')}>
+            <path d="M9 5l7 8-7 8" />
+          </SideArrow>
+        )}
       </div>
 
-      <p className="mt-5 text-center text-label tracking-wide text-ink-soft tabular-nums">
-        {(turn ? turn.to : idx) + 1} / {M}
-      </p>
+      {asSpread ? (
+        <p className="mt-5 text-center text-label tracking-wide text-ink-soft tabular-nums">
+          {(turn ? turn.to : idx) + 1} / {M}
+        </p>
+      ) : (
+        <Pager idx={idx} turn={turn} step={step} />
+      )}
 
       <p
         className={`mt-2 text-center text-label text-ink-soft transition-opacity duration-300 ${
@@ -508,7 +518,7 @@ export function Sketchbook() {
         }`}
         aria-hidden={hintGone}
       >
-        {sketchbookHint}
+        {asSpread ? sketchbookHint : 'Trascina dal bordo inferiore verso l’alto, o usa le frecce'}
       </p>
 
       <PlateList plates={plates} activeIdx={turn ? turn.to : idx} goTo={goTo} />
@@ -525,17 +535,21 @@ export function Sketchbook() {
  *  the fold, so it appears in lengths between pierced stations — in through
  *  one, along the crease, out through the next. The paper's fall into the fold
  *  belongs to each page instead (SketchPage), so that part turns with the leaf. */
-function Binding() {
+function Binding({ vertical = false }: { vertical?: boolean }) {
   return (
     <div className="sb-sewing" aria-hidden="true">
       {STATIONS.map((y) => (
-        <span key={y} className="sb-hole" style={{ top: `${y}%` }} />
+        <span key={y} className="sb-hole" style={vertical ? { left: `${y}%` } : { top: `${y}%` }} />
       ))}
       {[0, 2, 4].map((k) => (
         <span
           key={`t${k}`}
           className="sb-thread"
-          style={{ top: `${STATIONS[k]}%`, height: `${STATIONS[k + 1] - STATIONS[k]}%` }}
+          style={
+            vertical
+              ? { left: `${STATIONS[k]}%`, width: `${STATIONS[k + 1] - STATIONS[k]}%` }
+              : { top: `${STATIONS[k]}%`, height: `${STATIONS[k + 1] - STATIONS[k]}%` }
+          }
         />
       ))}
     </div>
@@ -548,11 +562,13 @@ function Strip({
   dir,
   front,
   back,
+  vertical = false,
 }: {
   i: number
   dir: Dir
   front: React.ReactNode
   back: React.ReactNode
+  vertical?: boolean
 }) {
   if (i >= N) return null
   /* Where this strip's slice sits within the page it shows. `next` reads the
@@ -563,22 +579,23 @@ function Strip({
   const fromEdge = `calc(-1 * (var(--pw, 0px) - ${i + 1} * ${frac}))`
   const frontShift = dir === 'next' ? fromGutter : fromEdge
   const backShift = dir === 'next' ? fromEdge : fromGutter
+  const translate = vertical ? 'translateY' : 'translateX'
 
   return (
     <div className={`sb-strip${i === N - 1 ? ' edge' : ''}`}>
       <div className="sb-face front">
-        <div className="sb-slice" style={{ transform: `translateX(${frontShift})` }}>
+        <div className="sb-slice" style={{ transform: `${translate}(${frontShift})` }}>
           {front}
         </div>
         <div className="sb-lit" />
       </div>
       <div className="sb-face back">
-        <div className="sb-slice" style={{ transform: `translateX(${backShift})` }}>
+        <div className="sb-slice" style={{ transform: `${translate}(${backShift})` }}>
           {back}
         </div>
         <div className="sb-lit" />
       </div>
-      <Strip i={i + 1} dir={dir} front={front} back={back} />
+      <Strip i={i + 1} dir={dir} front={front} back={back} vertical={vertical} />
     </div>
   )
 }
@@ -665,19 +682,18 @@ function SideArrow({
   )
 }
 
-/** Just the counter now — the arrows live beside the pages, and the stacked
- *  card keeps this pair under the plate where there is no room at the sides. */
+/** On phones the arrows follow the vertical turn and sit below the book. */
 function Pager({ idx, turn, step }: { idx: number; turn: Turn | null; step: (d: Dir) => void }) {
   return (
     <div className="mt-6 flex items-center justify-center gap-1">
       <ToolButton label="Tavola precedente" onClick={() => step('prev')}>
-        <path d="M13 4L7 10l6 6" />
+        <path d="M4 7l6 6 6-6" />
       </ToolButton>
       <span className="min-w-[5.5rem] text-center text-label tracking-wide text-ink-soft tabular-nums">
         {(turn ? turn.to : idx) + 1} / {M}
       </span>
       <ToolButton label="Tavola successiva" onClick={() => step('next')}>
-        <path d="M7 4l6 6-6 6" />
+        <path d="M4 13l6-6 6 6" />
       </ToolButton>
     </div>
   )
@@ -701,7 +717,7 @@ function ToolButton({
       aria-label={label}
       aria-pressed={pressed}
       title={label}
-      className={`flex h-9 w-9 items-center justify-center rounded-sm transition-colors duration-200 ${
+      className={`flex h-11 w-11 items-center justify-center rounded-sm transition-colors duration-200 ${
         pressed ? 'text-brick' : 'text-ink-soft hover:text-brick'
       }`}
     >

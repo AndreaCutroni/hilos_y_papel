@@ -44,7 +44,7 @@ export function SketchPage({ plate, side }: { plate: Plate; side: Side }) {
 
   if (side === 'left') {
     return (
-      <div className="relative flex h-full w-full flex-col justify-between px-[7%] py-[8%]">
+      <div className="sb-illustration relative flex h-full w-full flex-col justify-between px-[7%] py-[8%]">
         <span className="font-display text-[clamp(0.7rem,1.5cqw,0.95rem)] tracking-[0.3em] text-ink-soft">
           {plate.mark}
         </span>
@@ -62,7 +62,7 @@ export function SketchPage({ plate, side }: { plate: Plate; side: Side }) {
   }
 
   return (
-    <div className="relative flex h-full w-full flex-col justify-center px-[9%] py-[8%]">
+    <div className="sb-note relative flex h-full w-full flex-col justify-center px-[9%] py-[8%]">
       <h3 className="font-display text-[clamp(1.1rem,3.4cqw,2rem)] leading-[1.1] font-semibold text-ink">
         {plate.title}
       </h3>
