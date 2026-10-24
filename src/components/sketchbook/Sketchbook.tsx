@@ -96,7 +96,7 @@ export function Sketchbook() {
     const sign = r.dir === 'next' ? -1 : 1
     const next = r.dir === 'next'
 
-    r.curl.style.transform = `translateZ(0.5px) rotateY(${(sign * leaf.planes[0]).toFixed(4)}rad)`
+    r.curl.style.transform = `translateZ(var(--sb-leaf-z)) rotateY(${(sign * leaf.planes[0]).toFixed(4)}rad)`
     for (let i = 0; i < r.strips.length; i++) {
       const s = r.strips[i]
       if (i > 0) {

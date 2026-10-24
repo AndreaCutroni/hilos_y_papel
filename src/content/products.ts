@@ -12,16 +12,12 @@ export const generi = [
   {
     id: 'fantasia' satisfies Genere,
     name: 'Fantasia',
-    priceFrom: 15,
-    priceTo: 40,
     description:
       'Copertina realizzata con carte e/o stoffe lavorate con motivi e fantasie di diverso genere. I colori sono svariati e combinabili tra loro.',
   },
   {
     id: 'personalizzato' satisfies Genere,
     name: 'Personalizzato',
-    priceFrom: 25,
-    priceTo: 60,
     description:
       'Copertina personalizzabile a piacimento. Puoi darmi una foto, un’idea o un tema e realizzerò il disegno illustrato da stampare sulla copertina. Puoi scegliere di inserire il nome.',
   },
@@ -105,34 +101,6 @@ export const personalizzazione = {
     'I disegni seguono lo stile che vedi negli esempi.',
   ],
 } as const
-
-export type Esempio = {
-  genere: Genere
-  tipologia: Tipologia
-  formato: string
-  price: number
-  label?: string
-}
-
-/** Real examples with the brochure’s own pricing. */
-export const esempi: Esempio[] = [
-  { genere: 'fantasia', tipologia: 'flex', formato: 'A6 verticale/orizzontale', price: 15 },
-  { genere: 'fantasia', tipologia: 'flex', formato: 'A5 verticale', price: 20 },
-  { genere: 'fantasia', tipologia: 'rigido', formato: 'A6 verticale', price: 25 },
-  { genere: 'fantasia', tipologia: 'rigido', formato: 'A6 orizzontale', price: 25 },
-  { genere: 'fantasia', tipologia: 'rigido', formato: 'A5 verticale', price: 35 },
-  { genere: 'fantasia', tipologia: 'rigido', formato: 'A5 verticale', price: 40 },
-  { genere: 'personalizzato', tipologia: 'rigido', formato: 'A6 verticale', price: 35 },
-  { genere: 'personalizzato', tipologia: 'rigido', formato: 'A6 orizzontale', price: 35 },
-  { genere: 'personalizzato', tipologia: 'rigido', formato: 'A5 verticale', price: 40 },
-  {
-    genere: 'fantasia',
-    tipologia: 'flex',
-    formato: 'A6 verticale',
-    price: 38,
-    label: 'Tris di quaderni',
-  },
-]
 
 export const prezziNota =
   'In base al tipo di carta fantasia e alla personalizzazione, il prezzo può variare di pochi euro, a scendere o a salire rispetto a quello indicato negli esempi.'

@@ -1,20 +1,14 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import {
-  generi,
-  tipologie,
-  formati,
-  carte,
-  personalizzazione,
-  prezziNota,
-} from '@/content/products'
+import { generi, tipologie, formati, carte, personalizzazione } from '@/content/products'
 import { carteFantasia } from '@/content/carte'
 import { quaderni } from '@/content/quaderni'
 import { contact } from '@/content/brand'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
 import { rise, riseStagger } from '@/lib/motion'
 import { useReducedMotion } from '@/lib/useReducedMotion'
+import { fasciaPrezzo, formattaPrezzo } from '@/lib/prezzi'
 import './componi.css'
 
 const passi = ['Genere', 'Tipologia', 'Formato', 'Fogli interni', 'Copertina', 'Riepilogo']
@@ -52,6 +46,11 @@ export function ComponiIlTuo() {
   const formato = formatiVisibili.find((f) => f.id === params.get('formato'))
   const carta = carte.find((c) => c.id === params.get('carta'))
   const copertina = carteFantasia.find((c) => c.slug === params.get('copertina'))
+  const prezzo = fasciaPrezzo({
+    genere: genere?.id,
+    tipologia: tipologia?.id,
+    formato: formato?.name,
+  })
   const [idea, setIdea] = useState('')
   const [nome, setNome] = useState('')
   const scelte = [
@@ -92,9 +91,6 @@ export function ComponiIlTuo() {
     })
   }
 
-  const esempio = quaderni.find(
-    (q) => genere && q.genere === genere.id && (!tipologia || q.tipologia === tipologia.id)
-  )
   const esempioFantasia = quaderni.find((q) => q.genere === 'fantasia')
   const esempioPersonale = quaderni.find((q) => q.genere === 'personalizzato')
 
@@ -135,34 +131,40 @@ export function ComponiIlTuo() {
   function contenuto(indice: number) {
     if (indice === 0)
       return (
-        <div
-          className="componi-choices componi-genres"
-          role="radiogroup"
-          aria-label="Genere del quaderno"
-        >
-          {generi.map((g) => (
-            <Scelta
-              key={g.id}
-              gruppo="genere"
-              valore={g.id}
-              selezionata={genere?.id === g.id}
-              cambia={() => scegli('genere', g.id)}
-            >
-              <img
-                className="componi-choice-photo"
-                src={(g.id === 'fantasia' ? esempioFantasia : esempioPersonale)?.cover1}
-                alt=""
-              />
-              <span className="componi-choice-copy">
-                <strong>{g.name}</strong>
-                <span>{g.description}</span>
-                <small>
-                  Fascia indicativa · {g.priceFrom}–{g.priceTo} €
-                </small>
-              </span>
-            </Scelta>
-          ))}
-        </div>
+        <>
+          <div
+            className="componi-choices componi-genres"
+            role="radiogroup"
+            aria-label="Genere del quaderno"
+          >
+            {generi.map((g) => (
+              <Scelta
+                key={g.id}
+                gruppo="genere"
+                valore={g.id}
+                selezionata={genere?.id === g.id}
+                cambia={() => scegli('genere', g.id)}
+              >
+                <img
+                  className="componi-choice-photo"
+                  src={(g.id === 'fantasia' ? esempioFantasia : esempioPersonale)?.cover1}
+                  alt=""
+                />
+                <span className="componi-choice-copy">
+                  <strong>{g.name}</strong>
+                  <span>{g.description}</span>
+                  <small>
+                    Prezzo indicativo · {formattaPrezzo(fasciaPrezzo({ genere: g.id }))}
+                  </small>
+                </span>
+              </Scelta>
+            ))}
+          </div>
+          <p className="mt-4 text-label text-ink-soft">
+            Le immagini che vedi sono esemplificative: il tuo quaderno sarà realizzato con la carta
+            e i colori che sceglierai.
+          </p>
+        </>
       )
     if (indice === 1)
       return (
@@ -433,47 +435,28 @@ export function ComponiIlTuo() {
             <div className="componi-main">{pannello(attivo)}</div>
             <aside
               className="componi-desk"
-              aria-label={
-                attivo === 5 ? 'Ispirazione e fascia di prezzo' : 'Il tuo quaderno fin qui'
-              }
+              aria-label={attivo === 5 ? 'Dettagli e fascia di prezzo' : 'Il tuo quaderno fin qui'}
             >
               <p className="componi-kicker">
-                {attivo === 5 ? 'La tua ispirazione' : 'Il tuo quaderno, fin qui'}
+                {attivo === 5 ? 'Il tuo quaderno' : 'Il tuo quaderno, fin qui'}
               </p>
-              {copertina && genere?.id === 'fantasia' ? (
+              {copertina && genere?.id === 'fantasia' && (
                 <figure>
                   <img src={copertina.foto} alt={`Carta ${copertina.nome}`} />
-                  <figcaption>La carta che hai scelto · foto del materiale</figcaption>
+                  <figcaption>La carta che hai scelto</figcaption>
                 </figure>
-              ) : esempio ? (
-                <figure>
-                  <img src={esempio.cover1} alt="Un quaderno già realizzato, come ispirazione" />
-                  <figcaption>Un esempio realizzato · la foto è un’ispirazione</figcaption>
-                </figure>
-              ) : (
-                <div className="componi-desk-empty">
-                  <span aria-hidden="true">01 → 06</span>
-                  <p>
-                    Ogni quaderno comincia
-                    <br />
-                    da una scelta.
-                  </p>
-                </div>
               )}
               {attivo !== 5 && riepilogo()}
               {genere && (
-                <p className="componi-price">
-                  Fascia indicativa
-                  <strong>
-                    {genere.priceFrom}–{genere.priceTo} €
-                  </strong>
+                <p className="componi-price" role="status" aria-live="polite" aria-atomic="true">
+                  {prezzo && 'Prezzo indicativo'}
+                  <strong>{formattaPrezzo(prezzo)}</strong>
                   <span>Il prezzo finale si concorda con Chiara.</span>
                 </p>
               )}
             </aside>
           </div>
         </div>
-        <p className="componi-bottom-note">{prezziNota}</p>
       </div>
     </main>
   )

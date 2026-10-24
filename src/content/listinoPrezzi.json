@@ -1,0 +1,11 @@
+[
+  {"genere": "fantasia", "tipologia": "flex", "formato": "A6 verticale", "prezzo": "15-25"},
+  {"genere": "fantasia", "tipologia": "flex", "formato": "A6 orizzontale", "prezzo": "15-25"},
+  {"genere": "fantasia", "tipologia": "flex", "formato": "A5 verticale", "prezzo": "20-30"},
+  {"genere": "fantasia", "tipologia": "rigido", "formato": "A6 verticale", "prezzo": "25-35"},
+  {"genere": "fantasia", "tipologia": "rigido", "formato": "A6 orizzontale", "prezzo": "25-35"},
+  {"genere": "fantasia", "tipologia": "rigido", "formato": "A5 verticale", "prezzo": "35-40"},
+  {"genere": "personalizzato", "tipologia": "rigido", "formato": "A6 verticale", "prezzo": "25-40"},
+  {"genere": "personalizzato", "tipologia": "rigido", "formato": "A6 orizzontale", "prezzo": "25-40"},
+  {"genere": "personalizzato", "tipologia": "rigido", "formato": "A5 verticale", "prezzo": "35-60"}
+]

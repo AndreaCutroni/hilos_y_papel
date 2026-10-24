@@ -392,12 +392,6 @@
 .componi-idea strong {
   display: block;
 }
-.componi-bottom-note {
-  margin-top: 3rem;
-  max-width: 48rem;
-  font-size: var(--text-label);
-  color: var(--color-ink-soft);
-}
 .componi-workspace {
   margin-top: 2rem;
   display: grid;
@@ -431,19 +425,6 @@
 }
 .componi-desk .componi-summary dd {
   font-size: var(--text-label);
-}
-.componi-desk-empty {
-  padding: 2rem 0;
-  font-family: var(--font-display);
-  font-size: var(--text-h4);
-}
-.componi-desk-empty > span {
-  font-family: var(--font-sans);
-  font-size: var(--text-label);
-  color: var(--color-accent);
-}
-.componi-desk-empty > p {
-  margin-top: 0.75rem;
 }
 .componi-price {
   font-size: var(--text-label);

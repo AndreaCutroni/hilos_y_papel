@@ -179,6 +179,8 @@
   }
 
   .sb-book {
+    /* Resting and moving pages share the same plane at the fold. */
+    --sb-leaf-z: 0.5px;
     position: relative;
     width: 100%;
     aspect-ratio: 1600 / 1040;
@@ -236,6 +238,7 @@
     width: 50%;
     overflow: hidden;
     container-type: inline-size;
+    transform: translateZ(var(--sb-leaf-z));
   }
   .sb-half.left {
     left: 0;
@@ -449,7 +452,16 @@
     right: -1.1px;
   }
   .sb-face.back {
+    /* Mirror around the strip itself, excluding the seam overlap. Otherwise
+       the fold shifts by 1.1px when the back lands on the resting page. */
+    transform-origin: calc(var(--pw, 0px) / var(--n) / 2) 50%;
     transform: rotateY(180deg);
+  }
+  /* Overlap joins neighbouring strips, but at the spine it would cover the
+     other page's crease. Keep that boundary at the exact page width. */
+  .sb-curl.next > .sb-strip > .sb-face.back,
+  .sb-curl.prev > .sb-strip > .sb-face.front {
+    right: 0;
   }
   /* the free edge, rounded like the pages and with the paper's own thin edge.
      A back face is mirrored, so its outer side is its left. */
