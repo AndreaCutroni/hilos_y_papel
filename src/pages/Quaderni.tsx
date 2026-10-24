@@ -198,13 +198,9 @@ function VoceCatalogo({ q }: { q: Quaderno }) {
           but not shown: the owner wants the grid to speak through the photographs. */}
       <span className="sr-only">{q.nome}</span>
       <p className="mt-4 text-label text-ink-soft transition-colors duration-200 group-hover:text-brick">
-        {nomeTipologia.get(q.tipologia)} · {formatoDi(q)}
+        {nomeTipologia.get(q.tipologia)} · {formatoDi(q)} ·{' '}
+        {q.genere === 'personalizzato' ? 'Personalizzato' : 'Fantasia'}
       </p>
-      {q.genere === 'personalizzato' && (
-        <p className="mt-1 text-label font-bold tracking-wide text-accent uppercase">
-          Personalizzato
-        </p>
-      )}
       {q.disponibile && <span className="timbro mt-3 max-w-full">Disponibile subito</span>}
     </Link>
   )

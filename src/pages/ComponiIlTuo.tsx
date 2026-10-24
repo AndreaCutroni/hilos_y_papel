@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
   generi,
   tipologie,
@@ -12,6 +13,8 @@ import { carteFantasia } from '@/content/carte'
 import { quaderni } from '@/content/quaderni'
 import { contact } from '@/content/brand'
 import { ThreadDivider } from '@/components/motifs/ThreadDivider'
+import { rise, riseStagger } from '@/lib/motion'
+import { useReducedMotion } from '@/lib/useReducedMotion'
 import './componi.css'
 
 const passi = ['Genere', 'Tipologia', 'Formato', 'Fogli interni', 'Copertina', 'Riepilogo']
@@ -38,6 +41,7 @@ const a5Orizzontale = {
 }
 
 export function ComponiIlTuo() {
+  const reduced = useReducedMotion()
   const [params, setParams] = useSearchParams()
   const genere = generi.find((g) => g.id === params.get('genere'))
   const tipologia = tipologie.find(
@@ -382,20 +386,31 @@ export function ComponiIlTuo() {
 
   return (
     <main className="componi-page">
+      <header className="mx-auto max-w-6xl px-6 pt-16 pb-10 md:px-8 md:pt-20">
+        <motion.div
+          variants={riseStagger(0.08)}
+          initial={reduced ? false : 'hidden'}
+          animate="visible"
+        >
+          <motion.p
+            variants={rise}
+            className="text-label font-bold tracking-[0.14em] text-accent uppercase"
+          >
+            Un quaderno fatto a mano. Le tue scelte.
+          </motion.p>
+          <motion.h1 variants={rise} className="mt-4 text-h2 text-ink md:text-h1">
+            Componi il tuo <span className="text-accent">quaderno.</span>
+          </motion.h1>
+          <motion.p
+            variants={rise}
+            className="mt-6 max-w-xl text-body-lg text-ink-soft text-pretty"
+          >
+            Partiamo da quello che hai in mente, un passo alla volta.
+          </motion.p>
+        </motion.div>
+      </header>
+      <ThreadDivider className="mx-auto max-w-6xl px-6 md:px-8" />
       <div className="componi-container">
-        <header className="componi-intro">
-          <div>
-            <p className="componi-kicker">Un quaderno fatto a mano. Le tue scelte.</p>
-            <h1>
-              Componi il tuo<span>quaderno.</span>
-            </h1>
-          </div>
-          <p>
-            Un tempo di ideazione, di scelta e di realizzazione.
-            <span>Partiamo da quello che hai in mente, un passo alla volta.</span>
-          </p>
-        </header>
-        <ThreadDivider />
         <div className="componi-content" ref={percorso}>
           <nav className="componi-step-nav" aria-label="Passaggi della configurazione">
             <ol>

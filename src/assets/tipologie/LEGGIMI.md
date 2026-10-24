@@ -1,7 +1,5 @@
 # Fotografie della pagina Tipologie
 
-Le quattro foto sono estratte dalla pagina 4 della brochure in `references/`.
-
 - `rigido-copertina.webp`: il quaderno rigido chiuso.
 - `rigido-cucitura.webp`: il dettaglio del dorso aperto.
 - `flex-copertina.webp`: la copertina flessibile.

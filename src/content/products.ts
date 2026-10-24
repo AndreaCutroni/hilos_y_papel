@@ -43,7 +43,7 @@ export const tipologie = [
     traits: [
       'Copertina flessibile',
       'Rilegatura nascosta',
-      'Comodo da portare in giro e mettere in borsa o in tasca',
+      'Morbido e flessibile. Comodo da portare in giro e mettere in borsa o in tasca',
     ],
   },
 ] as const
